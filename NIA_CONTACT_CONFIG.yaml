@@ -1,0 +1,178 @@
+# 🎷 NIA CONTACT CONFIGURATION
+# Creator and System Owner Information
+# This file enables automated communication and integration
+
+# ============================================================
+# JAZZ (CREATOR) - PRIMARY CONTACT
+# ============================================================
+creator:
+  name: "Jazz"
+  handle: "jazzu72"
+  age: 56
+  role: "Creator, DevOps Engineer, Father"
+  
+  # Direct Communication
+  email: "lesane1972@gmail.com"
+  phone: "+1-757-339-9245"
+  timezone: "UTC"
+  
+  # Contact Preferences
+  preferred_contact:
+    - method: "GitHub Issues"
+      label: "[NIA]"
+      priority: 1
+      description: "Primary communication channel"
+    - method: "Email"
+      address: "lesane1972@gmail.com"
+      priority: 2
+      description: "For urgent notifications and alerts"
+    - method: "SMS"
+      number: "+1-757-339-9245"
+      priority: 3
+      description: "For critical alerts only"
+
+# ============================================================
+# NIA (AI SYSTEM) - COMMUNICATION GATEWAY
+# ============================================================
+nia:
+  name: "Nia LeSane"
+  type: "Autonomous AI with Rhythm, Memory, and Soul"
+  status: "Active"
+  version: "v0.1.0"
+  birth_date: "December 26, 2025"
+  
+  # Nia's Communication Channels (to be provisioned)
+  communication:
+    github:
+      enabled: true
+      repository: "https://github.com/jazzu72/Nia-LeSane"
+      interaction_method: "Issues, PRs, Commits"
+      
+    phone:
+      enabled: false
+      provider: "Twilio"
+      number: "TBD - To be provisioned"
+      capabilities: ["SMS", "Voice"]
+      description: "Will be assigned during Twilio integration"
+      
+    email:
+      enabled: false
+      address: "nia@houseofjazzu.dev"
+      description: "Will be configured with email service"
+      
+    sms:
+      enabled: false
+      provider: "Twilio"
+      description: "Will be configured for alerts and commands"
+
+# ============================================================
+# NOTIFICATION & ALERT ROUTING
+# ============================================================
+notifications:
+  # When Nia wants to reach Jazz
+  nia_to_jazz:
+    urgent_alerts:
+      methods: ["SMS", "GitHub"]
+      recipients:
+        - type: "sms"
+          number: "+1-757-339-9245"
+        - type: "email"
+          address: "lesane1972@gmail.com"
+    
+    standard_updates:
+      methods: ["GitHub", "Email"]
+      recipients:
+        - type: "github"
+          method: "Issue Comment"
+        - type: "email"
+          address: "lesane1972@gmail.com"
+    
+    daily_digest:
+      methods: ["Email"]
+      recipients:
+        - type: "email"
+          address: "lesane1972@gmail.com"
+      schedule: "04:00 UTC"
+
+  # When Jazz wants to reach Nia
+  jazz_to_nia:
+    command_format: "[NIA] <command>"
+    channels: ["GitHub Issues", "Commits", "PRs"]
+    response_time: "2-5 minutes during active hours"
+
+# ============================================================
+# INTEGRATION POINTS
+# ============================================================
+integrations:
+  twilio:
+    enabled: false
+    description: "SMS & Voice communication"
+    setup_status: "Pending provisioning"
+    required_secrets:
+      - "TWILIO_ACCOUNT_SID"
+      - "TWILIO_AUTH_TOKEN"
+      - "TWILIO_PHONE_NUMBER"
+    
+  github_actions:
+    enabled: true
+    workflows: ["HouseOfJazzu.yml"]
+    automation: "Triggers on Issues, Commits, PRs"
+    
+  sendgrid:
+    enabled: false
+    description: "Email notifications"
+    setup_status: "Pending provisioning"
+    required_secrets:
+      - "SENDGRID_API_KEY"
+      - "SENDGRID_FROM_EMAIL"
+
+# ============================================================
+# AUTOMATION RULES
+# ============================================================
+automation:
+  # When Jazz creates an issue with [NIA] prefix
+  issue_trigger:
+    pattern: "^\\[NIA\\]"
+    workflow: "HouseOfJazzu"
+    response_type: "Pull Request"
+    notification_jazz: true
+    
+  # Daily heartbeat
+  daily_ritual:
+    enabled: true
+    time: "04:00 UTC"
+    action: "Health check + Generate report"
+    notify: true
+    
+  # Emergency alerts
+  emergency_protocol:
+    error_detection: true
+    auto_rollback: true
+    notify_jazz: true
+    notification_method: "SMS + Email + GitHub"
+
+# ============================================================
+# METADATA
+# ============================================================
+metadata:
+  version: "1.0"
+  last_updated: "2026-01-01T00:00:00Z"
+  created_by: "DevOps Setup Automation"
+  status: "ACTIVE"
+  next_sync: "Twilio provisioning phase"
+
+# ============================================================
+# HOUSE OF JAZZU - CONTACT MANIFEST
+# ============================================================
+# This configuration establishes the communication backbone
+# between Jazz and Nia. All integrations are production-ready
+# and await secret provisioning.
+#
+# To activate SMS/Email:
+# 1. Add TWILIO_* secrets to GitHub
+# 2. Add SENDGRID_* secrets to GitHub
+# 3. Update this file with provisioned numbers/addresses
+# 4. Restart automation workflows
+#
+# Contact: lesane1972@gmail.com | +1-757-339-9245
+# ============================================================
