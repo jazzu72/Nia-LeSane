@@ -1,0 +1,70 @@
+name: iOS App Store Deploy
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+
+env:
+  XCODE_VERSION: 15.1
+
+jobs:
+  build-and-deploy:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Xcode
+        run: sudo xcode-select -s /Applications/Xcode_${XCODE_VERSION}.app/Contents/Developer
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.0
+          bundler-cache: true
+      
+      - name: Install Fastlane
+        run: |
+          sudo gem install fastlane -NV
+          fastlane add_plugin versioning
+      
+      - name: Decrypt Secrets
+        run: |
+          echo "${{ secrets.APPLE_AUTH_KEY }}" | base64 -d > AuthKey.p8
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE }}" | base64 -d > profile.mobileprovision
+      
+      - name: Build iOS App
+        run: |
+          fastlane ios build_release
+        env:
+          FASTLANE_USER: ${{ secrets.APPLE_ID_EMAIL }}
+          FASTLANE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+      
+      - name: Upload to App Store Connect
+        run: |
+          fastlane ios upload_testflight
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APPLE_AUTH_KEY }}
+      
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      
+      - name: Notify Deployment
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: 'iOS deployment to App Store: ${{ job.status }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
