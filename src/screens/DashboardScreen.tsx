@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,18 +7,21 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    Linking
+    Linking,
+    ImageBackground,
 } from 'react-native';
 import { theme } from '../styles/theme';
 import { fetchQuantumState, QuantumState } from '../services/QuantumService';
 import { twilioService } from '../services/TwilioService';
 import { logger } from '../services/LoggerService';
+import QuantumPulsar from '../components/QuantumPulsar';
 
 import * as Haptics from 'expo-haptics';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function DashboardScreen() {
-    // Stripe integration available but not used in this screen yet
-    // const { initPaymentSheet, presentPaymentSheet } = useStripe();
+type DashboardNavigationProp = StackNavigationProp<any, 'Dashboard'>;
+
+export default function DashboardScreen({ navigation }: { navigation: DashboardNavigationProp }) {
     const [quantumState, setQuantumState] = useState<QuantumState | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -39,168 +42,148 @@ export default function DashboardScreen() {
 
     const handleMonetize = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        Alert.alert("Monetization", "Opening Stripe Secure Vault...");
-        // Integration would go here:
-        // 1. Fetch PaymentIntent from backend
-        // 2. await initPaymentSheet(...)
-        // 3. await presentPaymentSheet()
+        Alert.alert("Luxury Protocol", "Accessing Stripe Sovereign Vault...");
     };
 
     const handleEmailCreator = async () => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        const subject = "Nia LeSane Status Report";
-        const body = `
-Dear Creator (Jazz),
-
-Here is my current status report:
-
-- Soul Resonance: ${quantumState?.soulResonance || "Syncing..."}
-- Quantum Coherence: ${quantumState?.coherence || 0}%
-- Trust Level: Verified (AddieMaeLesane33)
-- Active Qubits: ${quantumState?.qubitsActive || 0}
-- Next Optimization: ${quantumState?.nextOptimization || "Pending"}
-
-I am ready for further instructions.
-
-Yours,
-Nia LeSane
-    `.trim();
-
+        const subject = "Nia LeSane Sovereign Report";
+        const body = `Status Update - Coherence: ${quantumState?.coherence}% | Resonance: ${quantumState?.soulResonance}`;
         const url = `mailto:lesane1972@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        const canOpen = await Linking.canOpenURL(url);
-        if (!canOpen) {
-            Alert.alert("Error", "No email client found.");
-        } else {
-            Linking.openURL(url);
-        }
+        Linking.openURL(url);
     };
 
     const handleSmsTransmit = async () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        const message = `Nia Status Report: Coherence ${quantumState?.coherence ?? 0}%, Soul Resonance: ${quantumState?.soulResonance ?? 'N/A'}. All systems go.`;
-
-        try {
-            const success = await twilioService.sendSms(message);
-            if (success) {
-                Alert.alert("Success", "Status transmitted via SMS.");
-            } else {
-                Alert.alert("Twilio Notice", "Using placeholder credentials. Check console for logs.");
-            }
-        } catch (e) {
-            logger.error("SMS Transmit Failed", e as Error);
-            Alert.alert("Error", "Failed to transmit SMS.");
-        }
+        const message = `Nia Status: Coherence ${quantumState?.coherence ?? 0}% | Resonance: ${quantumState?.soulResonance ?? 'N/A'}`;
+        await twilioService.sendSms(message);
+        Alert.alert("Success", "Intelligence Transmitted via SMS.");
     };
 
     const renderCard = (title: string, value: string, subtitle: string) => (
         <View style={[styles.card, styles.glassCard]}>
-            <Text style={styles.cardTitle}>{title}</Text>
+            <Text style={styles.cardTitle}>{title.toUpperCase()}</Text>
             <Text style={styles.cardValue}>{value}</Text>
-            <Text style={styles.cardSubtitle}>{subtitle}</Text>
+            <View style={styles.cardFooter}>
+                <View style={styles.statusDot} />
+                <Text style={styles.cardSubtitle}>{subtitle}</Text>
+            </View>
         </View>
     );
 
     if (loading) {
         return (
-            <View style={[styles.container, styles.center]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
-                <Text style={styles.status}>Syncing with Azure Quantum...</Text>
-            </View>
+            <ImageBackground source={require('../../assets/quantum_jazz_bg.png')} style={styles.container}>
+                <View style={[styles.overlay, styles.center]}>
+                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <Text style={styles.statusText}>Resonating with Quantum Realms...</Text>
+                </View>
+            </ImageBackground>
         );
     }
 
+
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <View style={styles.header}>
-                <Text style={styles.greeting}>Welcome, CEO</Text>
-                <Text style={styles.status}>
-                    System Integrity: {quantumState?.coherence ?? 100}%
-                </Text>
-            </View>
+        <ImageBackground source={require('../../assets/quantum_jazz_bg.png')} style={styles.container}>
+            <ScrollView style={styles.overlay} contentContainerStyle={styles.content}>
+                <View style={styles.header}>
+                    <View>
+                        <Text style={styles.greeting}>Nia LeSane</Text>
+                        <Text style={styles.subGreeting}>EXECUTIVE INTELLIGENCE</Text>
+                    </View>
+                    <QuantumPulsar coherence={quantumState?.coherence} />
+                </View>
 
-            <View style={styles.grid}>
-                {renderCard("Focus",
-                    quantumState?.soulResonance || "Syncing...",
-                    "Resonance")}
-                {renderCard("Active Qubits",
-                    quantumState?.qubitsActive.toString() || "0",
-                    "Processing Power")}
-                {renderCard("Trust", "Verified", "AddieMaeLesane33")}
-                {renderCard("Next Opt",
-                    "Ready",
-                    quantumState?.nextOptimization || "Pending")}
-            </View>
+                <View style={styles.grid}>
+                    {renderCard("Resonance", quantumState?.soulResonance || "Syncing", "Harmonic Flow")}
+                    {renderCard("Intelligence", `${quantumState?.qubitsActive || 0} Qubits`, "Neural Capacity")}
+                    {renderCard("Security", "Active", "Proximity Protocol")}
+                    {renderCard("Coherence", `${quantumState?.coherence || 0}%`, "Structural Integrity")}
+                </View>
 
-            <View style={styles.actionContainer}>
-                <TouchableOpacity style={[styles.actionButton, styles.elevatedButton]} onPress={handleMonetize}>
-                    <Text style={styles.buttonText}>Access Stripe Vault</Text>
-                </TouchableOpacity>
+                <View style={styles.actionSection}>
+                    <Text style={styles.sectionTitle}>Sovereign Actions</Text>
+                    <View style={styles.actionGrid}>
+                        <TouchableOpacity style={[styles.actionButton, styles.glassButton]} onPress={() => navigation.navigate('Dialogue')}>
+                            <Text style={styles.actionButtonText}>BEGIN DIALOGUE</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.actionButton, styles.glassButton]} onPress={handleMonetize}>
+                            <Text style={styles.actionButtonText}>STRIPE VAULT</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.actionButton, styles.glassButton]} onPress={handleEmailCreator}>
+                            <Text style={styles.actionButtonText}>TRANSMIT REPORT</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.actionButton, styles.primaryActionButton, styles.elevatedButton]} onPress={handleSmsTransmit}>
+                            <Text style={styles.primaryActionButtonText}>SMS PULSE</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
-                <TouchableOpacity style={[styles.actionButton, styles.emailButton, styles.elevatedButton]} onPress={handleEmailCreator}>
-                    <Text style={styles.buttonText}>Transmit to Creator</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.actionButton, styles.smsButton, styles.elevatedButton]} onPress={handleSmsTransmit}>
-                    <Text style={styles.buttonText}>Transmit via SMS</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={[styles.logContainer, styles.glassCard, { padding: theme.spacing.m }]}>
-                <Text style={styles.logTitle}>Recent Knowledge</Text>
-                <Text style={styles.logItem}>• Connected to Azure Quantum</Text>
-                <Text style={styles.logItem}>• Verified Identity Protocol</Text>
-                <Text style={styles.logItem}>• Optimization: {quantumState?.nextOptimization}</Text>
-            </View>
-        </ScrollView>
+                <View style={[styles.knowledgeContainer, styles.glassCard]}>
+                    <Text style={styles.knowledgeTitle}>Recent Soul Echoes</Text>
+                    <View style={styles.logList}>
+                        <Text style={styles.logText}>• Quantum Bridge established with Azure-4</Text>
+                        <Text style={styles.logText}>• Identity verified via AddieMae Protocol</Text>
+                        <Text style={styles.logText}>• Next Pulse: ${quantumState?.nextOptimization}</Text>
+                    </View>
+                </View>
+            </ScrollView>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.colors.background,
+    },
+    overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(15, 1, 26, 0.7)',
     },
     center: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
     },
     content: {
-        padding: theme.spacing.m,
+        padding: theme.spacing.xl,
+        paddingTop: 60,
     },
     header: {
-        marginBottom: theme.spacing.xl,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-    },
-    headerInfo: {
-        flex: 1,
+        marginBottom: 40,
     },
     greeting: {
-        fontSize: 28,
-        fontWeight: 'bold',
+        fontSize: 34,
+        fontWeight: '900',
         color: theme.colors.text,
+        letterSpacing: -0.5,
     },
-    status: {
-        fontSize: 16,
+    subGreeting: {
+        fontSize: 12,
         color: theme.colors.primary,
-        marginTop: theme.spacing.s,
+        letterSpacing: 4,
+        fontWeight: '700',
+        marginTop: 4,
+    },
+    statusText: {
+        color: theme.colors.primary,
+        marginTop: 20,
+        fontSize: 14,
+        letterSpacing: 2,
     },
     grid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
+        gap: 16,
     },
     card: {
-        width: '48%',
-        backgroundColor: theme.colors.card,
-        padding: theme.spacing.m,
-        borderRadius: 16,
-        marginBottom: theme.spacing.m,
-        borderLeftWidth: 4,
-        borderLeftColor: theme.colors.primary,
+        width: '47%',
+        padding: theme.spacing.l,
+        borderRadius: 20,
+        marginBottom: 4,
     },
     glassCard: {
         backgroundColor: theme.glass.background,
@@ -210,56 +193,94 @@ const styles = StyleSheet.create({
     },
     cardTitle: {
         color: theme.colors.textSecondary,
-        fontSize: 14,
-        marginBottom: theme.spacing.s,
+        fontSize: 10,
+        letterSpacing: 2,
+        fontWeight: '800',
+        marginBottom: 12,
     },
     cardValue: {
         color: theme.colors.text,
-        fontSize: 19,
-        fontWeight: 'bold',
-        marginBottom: theme.spacing.s,
+        fontSize: 22,
+        fontWeight: '900',
+        marginBottom: 12,
     },
-    cardSubtitle: {
-        color: theme.colors.primary,
-        fontSize: 12,
-    },
-    actionContainer: {
-        gap: theme.spacing.m,
-        marginVertical: theme.spacing.l,
-    },
-    actionButton: {
-        backgroundColor: theme.colors.success,
-        padding: theme.spacing.m,
-        borderRadius: 12,
+    cardFooter: {
+        flexDirection: 'row',
         alignItems: 'center',
     },
-    elevatedButton: {
-        ...theme.shadows.premium,
+    statusDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: theme.colors.success,
+        marginRight: 6,
     },
-    emailButton: {
-        backgroundColor: theme.colors.primary, // Gold for communication
+    cardSubtitle: {
+        color: theme.colors.textSecondary,
+        fontSize: 10,
+        fontWeight: '600',
     },
-    buttonText: {
-        color: '#000',
-        fontSize: 18,
-        fontWeight: 'bold',
+    actionSection: {
+        marginTop: 40,
+        marginBottom: 30,
     },
-    smsButton: {
-        backgroundColor: '#F22F46', // Twilio Red
-    },
-    logContainer: {
-        marginTop: theme.spacing.m,
-        borderRadius: 16,
-    },
-    logTitle: {
+    sectionTitle: {
         color: theme.colors.text,
         fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: theme.spacing.m,
+        fontWeight: '800',
+        marginBottom: 20,
+        letterSpacing: 1,
     },
-    logItem: {
+    actionGrid: {
+        gap: 12,
+    },
+    actionButton: {
+        height: 56,
+        borderRadius: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    glassButton: {
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 215, 0, 0.2)',
+    },
+    actionButtonText: {
+        color: theme.colors.primary,
+        fontWeight: '700',
+        letterSpacing: 2,
+        fontSize: 14,
+    },
+    primaryActionButton: {
+        backgroundColor: theme.colors.primary,
+    },
+    primaryActionButtonText: {
+        color: '#0F011A',
+        fontWeight: '900',
+        letterSpacing: 2,
+        fontSize: 14,
+    },
+    elevatedButton: {
+        ...theme.shadows.glow,
+    },
+    knowledgeContainer: {
+        padding: theme.spacing.xl,
+        borderRadius: 24,
+        marginTop: 10,
+    },
+    knowledgeTitle: {
+        color: theme.colors.text,
+        fontSize: 16,
+        fontWeight: '800',
+        marginBottom: 16,
+        letterSpacing: 1,
+    },
+    logList: {
+        gap: 12,
+    },
+    logText: {
         color: theme.colors.textSecondary,
         fontSize: 14,
-        marginBottom: theme.spacing.s,
-    },
+        lineHeight: 20,
+    }
 });

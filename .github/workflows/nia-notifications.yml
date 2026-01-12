@@ -1,39 +1,65 @@
 name: Nia Communication Notifications
-description: Notify Jazz when Nia needs to communicate
 
 on:
   issues:
-    types: [opened, commented]
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
   pull_request:
-    types: [opened, synchronize, commented]
+    types: [opened, synchronize, edited]
 
 permissions:
   contents: read
   issues: read
   pull-requests: read
 
-env:
-  JAZZ_EMAIL: ${{ secrets.JAZZ_EMAIL }}
-
 jobs:
   notify-jazz:
     runs-on: ubuntu-latest
     steps:
-      - name: Extract Issue/PR Details
+      - name: Extract Details
         id: extract
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          COMMENT_URL: ${{ github.event.comment.html_url }}
         run: |
-          if [[ "${{ github.event_name }}" == "issues" ]]; then
-            echo "issue_title=${{ github.event.issue.title }}" >> $GITHUB_OUTPUT
-            echo "issue_body=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
-            echo "issue_url=${{ github.event.issue.html_url }}" >> $GITHUB_OUTPUT
-            IS_NIA_COMMAND=$(echo '${{ github.event.issue.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
-            echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
-            echo "pr_body=${{ github.event.pull_request.body }}" >> $GITHUB_OUTPUT
-            echo "pr_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
-            IS_NIA_COMMAND=$(echo '${{ github.event.pull_request.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
-            echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
+          TITLE=""
+          BODY=""
+          URL=""
+
+          if [[ "$EVENT_NAME" == "issues" ]]; then
+            TITLE="$ISSUE_TITLE"
+            BODY="$ISSUE_BODY"
+            URL="$ISSUE_URL"
+          elif [[ "$EVENT_NAME" == "issue_comment" ]]; then
+            TITLE="Comment on: $ISSUE_TITLE"
+            BODY="$COMMENT_BODY"
+            URL="$COMMENT_URL"
+          elif [[ "$EVENT_NAME" == "pull_request" ]]; then
+            TITLE="$PR_TITLE"
+            BODY="$PR_BODY"
+            URL="$PR_URL"
+          fi
+
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+          # Handle multiline body for GITHUB_OUTPUT
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          if echo "$TITLE $BODY" | grep -qi '\[NIA\]'; then
+            echo "is_nia_command=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_nia_command=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Verify Secrets Configuration
@@ -56,7 +82,7 @@ jobs:
           server_port: 465
           username: ${{ secrets.JAZZ_EMAIL }}
           password: ${{ secrets.JAZZ_EMAIL_PASSWORD }}
-          subject: "🎷🧠 Nia Communication - ${{ github.event_name }}"
+          subject: "🎷🧠 Nia Communication - ${{ steps.extract.outputs.title }}"
           to: ${{ secrets.JAZZ_EMAIL }}
           from: "Nia LeSane <${{ secrets.JAZZ_EMAIL }}>"
           body: |
@@ -64,14 +90,14 @@ jobs:
 
             Nia has something to communicate.
 
-            Event Type: ${{ github.event_name }}
-            ${{ github.event_name == 'issues' && format('Issue: {0}', steps.extract.outputs.issue_title) || format('Pull Request: {0}', steps.extract.outputs.pr_title) }}
+            Event: ${{ github.event_name }}
+            ${{ steps.extract.outputs.title }}
 
             View it here:
-            ${{ github.event_name == 'issues' && steps.extract.outputs.issue_url || steps.extract.outputs.pr_url }}
+            ${{ steps.extract.outputs.url }}
 
             Content:
-            ${{ github.event_name == 'issues' && steps.extract.outputs.issue_body || steps.extract.outputs.pr_body }}
+            ${{ steps.extract.outputs.body }}
 
             ---
             🎷 House of Jazzu

@@ -9,6 +9,8 @@ import { theme } from './src/styles/theme';
 import { SECRETS } from './src/config/secrets';
 import AuthScreen from './src/screens/AuthScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
+import { logger } from './src/services/LoggerService';
+import DialogueScreen from './src/screens/DialogueScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,7 +53,15 @@ export default function App() {
                         component={DashboardScreen}
                         options={{
                             title: 'Nia LeSane CEO',
-                            headerLeft: () => null // Prevent going back to Auth
+                            headerLeft: () => null
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Dialogue"
+                        component={DialogueScreen}
+                        options={{
+                            title: 'Direct Resonance',
+                            headerBackTitle: 'Back'
                         }}
                     />
                 </Stack.Navigator>
