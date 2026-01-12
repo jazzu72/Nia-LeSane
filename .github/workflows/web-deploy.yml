@@ -1,0 +1,42 @@
+name: Web Deployment
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18.19.0"
+                  cache: "npm"
+
+            - name: Install Dependencies
+              run: npm ci --legacy-peer-deps
+
+            - name: Build Web
+              run: npm run build:web
+              env:
+                  SPECIAL_PASSWORD: ${{ secrets.SPECIAL_PASSWORD }}
+                  AZURE_API_BASE_URL: ${{ secrets.AZURE_API_BASE_URL }}
+                  STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+                  STRIPE_MERCHANT_ID: ${{ secrets.STRIPE_MERCHANT_ID }}
+                  TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+                  TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+                  TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
+                  USER_PHONE: ${{ secrets.USER_PHONE }}
+                  OIDC_AUTHORITY: ${{ secrets.OIDC_AUTHORITY }}
+                  OIDC_CLIENT_ID: ${{ secrets.OIDC_CLIENT_ID }}
+
+            - name: Deploy to GitHub Pages
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  folder: dist
+                  branch: gh-pages

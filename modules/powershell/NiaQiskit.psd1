@@ -1,9 +1,9 @@
-NiaQiskit.psd1@{
+@{
     RootModule = 'NiaQiskit.psm1'
     ModuleVersion = '1.0.0'
     GUID = 'a4c3f5d2-8e1b-4c9a-b7d6-2f5e3a1c9b4d'
     Author = 'Nia LeSane'
-    CompanyName = 'Nia LeSane AI'
+    CompanyName = 'House of Jazzu'
     Description = 'Quantum Integration Module for Nia LeSane - Enables quantum rituals directly from PowerShell using Qiskit'
     PowerShellVersion = '5.1'
     FunctionsToExport = @(
@@ -36,3 +36,4 @@ NiaQiskit.psd1@{
         }
     }
 }
+

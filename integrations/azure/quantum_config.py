@@ -1,6 +1,6 @@
 
 
-azure_quantum_config.pyfrom azure.quantum import Workspace
+from azure.quantum import Workspace
 
 workspace = Workspace(
     subscription_id="your-sub-id",

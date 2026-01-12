@@ -1,4 +1,5 @@
 from azure.quantum.qiskit import AzureQuantumProvider
+from .quantum_config import workspace
 from qiskit import QuantumCircuit, transpile
 from qiskit.providers import JobStatus
 import time

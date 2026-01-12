@@ -4,8 +4,14 @@ UseModule.ps1# UseModule.ps1
 # =============================================================================
 # IMPORT THE MODULE
 # =============================================================================
-# Method 1: Import from current directory (if in same folder as NiaQiskit.psm1)
-Import-Module -Path .\NiaQiskit.psm1 -Force
+# Method 1: Import from module directory (robust relative path)
+$ModulePath = Join-Path $PSScriptRoot "..\..\modules\powershell\NiaQiskit.psm1"
+if (Test-Path $ModulePath) {
+    Import-Module -Path $ModulePath -Force
+} else {
+    # Fallback to root-relative if running from root
+    Import-Module -Path .\modules\powershell\NiaQiskit.psm1 -Force
+}
 
 # Method 2: Import using module manifest (recommended for production)
 # Import-Module -Path .\NiaQiskit.psd1 -Force

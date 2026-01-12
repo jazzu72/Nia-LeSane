@@ -1,20 +1,40 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.venv/
-venv/
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Environment Variables
 .env
 .env.local
+.env.*.local
 
-# Vault
-niabrain/vault/ledger.db
+# Testing
+coverage/
+*.log
 
 # IDE
-.vscode/
 .idea/
+*.swp
+*.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Build
+*.tsbuildinfo

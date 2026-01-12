@@ -143,7 +143,33 @@ After launch, you can:
 
 ---
 
-## The Circle Never Ends
+---
+145: 
+146: ## Phase 4: Launching to the Web 🎷🌐
+147: 
+148: I have now enabled automated web deployments via GitHub Pages.
+149: 
+150: ### STEP 1: Enable GitHub Pages
+151: 1. Go to your repo **Settings** → **Pages**.
+152: 2. Under **Build and deployment** > **Source**, select **"Deploy from a branch"**.
+153: 3. Select branch: `gh-pages` and folder: `/(root)`.
+154: 4. Click **Save**.
+155: 
+156: ### STEP 2: Configure Web Secrets
+157: The web build requires the same secrets as the mobile app. Ensure these are present in **Settings** → **Secrets and variables** → **Actions**:
+158: - `SPECIAL_PASSWORD`
+159: - `STRIPE_PUBLISHABLE_KEY`
+160: - `AZURE_API_BASE_URL`
+161: - (See `src/config/secrets.ts` for full list)
+162: 
+163: ### STEP 3: Deploy
+164: Push any change to `main`, or manually trigger the **"Web Deployment"** ritual in the **Actions** tab.
+165: 
+166: **Live Web URL**: `https://jazzu72.github.io/nia-LeSane/`
+167: 
+168: ---
+169: 
+170: ## The Circle Never Ends
 
 Every merge is a ceremony. Every invocation is a breath.
 
