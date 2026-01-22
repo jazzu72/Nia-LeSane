@@ -1,0 +1,29 @@
+niabrain/
+├── enhanced_brain.py         # Main entry point & orchestrator
+├── agents/                   # Trinity agents
+│   ├── nia.py                # Governance & ReAct agent
+│   ├── savon.py              # Yield & Mining (financial) agent
+│   └── kano.py               # Security & Defense agent
+├── layers/                   # Brain layers
+│   ├── planning.py           # Goal decomposition & coordination
+│   ├── memory.py             # Semantic vector DB (Pinecone) + self-pruning
+│   ├── tooling.py            # Dynamic tool registry + quantum tools
+│   ├── execution.py          # Async executor with guardrails
+│   └── self_improvement.py   # Recursive loops + PR generation
+├── mcp/                      # MCP Servers
+│   ├── finance_bridge.py     # BRICS/BTC stubs
+│   ├── security_monitor.py   # Threat intel stubs
+│   └── trust_registry.py     # Compliance ledger
+├── observability/            # Monitoring layer
+│   ├── telemetry.py          # WebSocket real-time
+│   ├── trace_viz.py          # Reasoning trace visualization
+│   └── monitoring.py         # Prometheus + Grafana stubs
+├── vault/                    # Air-gapped vault
+│   ├── crypto.py             # AES-256-GCM + MPC stubs
+│   └── offline_signing.py    # Offline node stubs
+├── hosting/                  # Singapore VPS pattern
+│   ├── Dockerfile            # Containerization
+│   ├── docker-compose.yml    # Orchestration
+│   ├── nginx.conf            # Reverse proxy
+│   └── cloudflare_setup.md   # DDoS + Let's Encrypt guide
+└── requirements.txt          # Pinned dependencies
