@@ -1,3 +1,10 @@
 cd "C:\Users\lesan\Documents\Nia-LeSane"
 .\deploy_vercel.ps1       # preview
 .\deploy_vercel.ps1 -Prod # production
+.\deploy_vercel.ps1       # preview
+.\deploy_vercel.ps1 -Prod # production
+cd "C:\Users\lesan\Documents\Nia-LeSane"
+.\launch_preflight.ps1
+npm install
+vercel link
+vercel --prod --yes
