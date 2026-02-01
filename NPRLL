@@ -1,0 +1,3 @@
+cd "C:\Users\lesan\Documents\Nia-LeSane"
+.\deploy_vercel.ps1       # preview
+.\deploy_vercel.ps1 -Prod # production
