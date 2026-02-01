@@ -1,0 +1,31 @@
+Param(
+    [string]$ProjectDir = "$PSScriptRoot",
+    [switch]$Prod
+)
+
+Write-Host "🎷 Nia LeSane → Vercel deploy starting..." -ForegroundColor Cyan
+
+if (-not (Get-Command vercel -ErrorAction SilentlyContinue)) {
+    Write-Error "Vercel CLI not found. Run: npm install -g vercel"
+    Read-Host "Press Enter to exit"
+    return
+}
+
+Set-Location $ProjectDir
+
+if (-not (Test-Path "package.json")) {
+    Write-Error "package.json not found. Are you in the Nia-LeSane root?"
+    Read-Host "Press Enter to exit"
+    return
+}
+
+Write-Host "Installing dependencies..." -ForegroundColor Cyan
+npm install
+
+$target = if ($Prod) { "--prod" } else { "" }
+
+Write-Host "Deploying to Vercel $($Prod ? 'production' : 'preview')..." -ForegroundColor Cyan
+vercel $target --yes
+
+Write-Host "✅ Deploy complete." -ForegroundColor Green
+Read-Host "Press Enter to close"
