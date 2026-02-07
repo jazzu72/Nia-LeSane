@@ -1,0 +1,13 @@
+
+/pwa
+├── manifest.json
+├── service-worker.js
+├── icons/
+│   ├── icon-192.png
+│   ├── icon-512.png
+│   └── maskable-icon.png
+├── splash/
+│   └── splash-1125x2436.png
+├── offline.html
+├── pwa-init.ts
+└── README.md
