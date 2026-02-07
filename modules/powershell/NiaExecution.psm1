@@ -2,11 +2,9 @@
 .SYNOPSIS
     Nia LeSane Execution Module
     Part of the "Powerful" CEO System.
-
 .DESCRIPTION
     Provides capabilities to execute programs in the system path and verify local environment settings.
     Designed for the House of Jazzu.
-
 .FUNCTIONS
     Invoke-NiaProgram
     Get-NiaLocale
@@ -19,15 +17,25 @@ function Invoke-NiaProgram {
         [string]$Program,
 
         [Parameter(Mandatory=$false, Position=1)]
-        [string[]]$Arguments
-    )
+        [string[]]$Arguments,
 
+        [Switch]$VerboseOutput  # Optional flag for more detailed logging
+    )
     process {
-        Write-Host "🎷 Nia executing: $Program" -ForegroundColor Magenta
-        
+        if ($VerboseOutput) {
+            Write-Verbose "🎷 Nia preparing to execute: $Program with arguments: $Arguments"
+        } else {
+            Write-Host "🎷 Nia executing: $Program" -ForegroundColor Magenta
+        }
+       
         try {
             if (Get-Command $Program -ErrorAction SilentlyContinue) {
-                & $Program @Arguments
+                if ($Arguments) {
+                    & $Program $Arguments
+                } else {
+                    & $Program
+                }
+                Write-Host "✅ Execution complete" -ForegroundColor Green
             } else {
                 Write-Warning "Program '$Program' not found in system path."
             }
@@ -41,7 +49,6 @@ function Invoke-NiaProgram {
 function Get-NiaLocale {
     [CmdletBinding()]
     param()
-
     process {
         Write-Host "🌍 Verifying Soulful Locale..." -ForegroundColor Cyan
         $culture = Get-Culture

@@ -10,6 +10,19 @@ dist/
 web-build/
 
 # Native
+
+# ====== SECURITY: Never commit production secrets ======
+# Production environment file with real secrets
+.env.production
+# Local environment overrides
+.env.production.local
+# Vault and encrypted files
+vault/
+*.enc
+# Private keys and certificates
+*.key
+*.cert
+*.pem
 *.orig.*
 *.jks
 *.p8

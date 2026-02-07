@@ -1,0 +1,5 @@
+- name: Validate PWA surface
+  run: |
+    test -f src/pwa/manifest.json
+    test -f src/pwa/service-worker.ts
+    echo "✅ PWA surface validated"
