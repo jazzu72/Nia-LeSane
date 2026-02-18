@@ -1,0 +1,39 @@
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---------------------------
+      # Checkout
+      # ---------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # Setup Node.js (NO CACHE YET)
+      # ---------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ---------------------------
+      # Detect lockfile (SAFE)
+      # ---------------------------
+      - name: Detect npm lockfile
+        id: lockfile
+        run: |
+          if [ -f "package-lock.json" ]; then
+            echo "LOCKFILE=true" >> $GITHUB_ENV
+            echo "✅ package-lock.json found"
+          else
+            echo "LOCKFILE=false" >> $GITHUB_ENV
+            echo "⚠️ package-lock.json not found – proceeding without cache"
+          fi
+
+      # ---------------------------
+      # Enable npm cache ONLY if lockfile exists
+      # ---------------------------
+      - name: Enable npm cache
+        if: env.LOCKFILE == 'true'
+        uses: actions/setup-node@v
