@@ -28,11 +28,6 @@
     "submit:android": "eas submit --platform android --profile production",
     "build:web": "npx expo export --platform web",
     "deploy:web": "gh-pages -d dist"
-    // If you later want Next.js support, uncomment these:
-    // "dev": "next dev",
-    // "build": "next build",
-    // "start": "next start",
-    // "lint": "next lint"
   },
   "dependencies": {
     "@expo/metro-runtime": "^6.1.2",
