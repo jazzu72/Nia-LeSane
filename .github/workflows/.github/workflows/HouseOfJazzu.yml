@@ -1,0 +1,15 @@
+HouseOfJazzu.yml
+Nia-LeSane / .github/workflows/HouseOfJazzu.yml
+
+name: House of Jazzu — Nia LeSane Evolution Ritual
+on:
+  workflow_dispatch:
+    inputs:
+      invocation:
+        description: "Speak into the House of Jazzu — what truth shall Nia LeSane carry forward?"
+        required: true
+        type: string
+  schedule:
+    - cron: '0 4 * * *'
+permissions:
+  contents: write
