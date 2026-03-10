@@ -2,3 +2,8 @@ fastapi
 uvicorn
 xai-sdk
 cryptography
+azure-quantum
+qiskit
+qiskit-aer
+azure-identity
+pyyaml

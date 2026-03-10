@@ -25,6 +25,12 @@
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "web": {
+      "bundler": "webpack",
+      "favicon": "./assets/favicon.png",
+      "baseUrl": "/nia-LeSane"
+    },
+    "homepage": "https://jazzu72.github.io/nia-LeSane/"
   }
 }

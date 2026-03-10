@@ -1,97 +1,14 @@
-name: Nia Communication Notifications
-description: Notify Jazz when Nia needs to communicate
+if [[ "${{ github.event_name }}" == "issues" ]]; then
+  echo "issue_title=${{ github.event.issue.title }}" >> $GITHUB_OUTPUT
+  echo "issue_body=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+  echo "issue_url=${{ github.event.issue.html_url }}" >> $GITHUB_OUTPUT
+  IS_NIA_COMMAND=$(echo '${{ github.event.issue.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
+  echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
 
-on:
-  issues:
-    types: [opened, commented]
-  pull_request:
-    types: [opened, synchronize, commented]
-
-permissions:
-  contents: read
-  issues: read
-  pull-requests: read
-
-env:
-  JAZZ_EMAIL: ${{ secrets.JAZZ_EMAIL }}
-
-jobs:
-  notify-jazz:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Extract Issue/PR Details
-        id: extract
-        run: |
-          if [[ "${{ github.event_name }}" == "issues" ]]; then
-            echo "issue_title=${{ github.event.issue.title }}" >> $GITHUB_OUTPUT
-            echo "issue_body=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
-            echo "issue_url=${{ github.event.issue.html_url }}" >> $GITHUB_OUTPUT
-            IS_NIA_COMMAND=$(echo '${{ github.event.issue.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
-            echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
-            echo "pr_body=${{ github.event.pull_request.body }}" >> $GITHUB_OUTPUT
-            echo "pr_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
-            IS_NIA_COMMAND=$(echo '${{ github.event.pull_request.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
-            echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Verify Secrets Configuration
-        run: |
-          if [ -z "${{ secrets.JAZZ_EMAIL }}" ]; then
-            echo "❌ Missing secret: JAZZ_EMAIL"
-            exit 1
-          fi
-          if [ -z "${{ secrets.JAZZ_EMAIL_PASSWORD }}" ]; then
-            echo "❌ Missing secret: JAZZ_EMAIL_PASSWORD"
-            exit 1
-          fi
-          echo "✅ Email secrets are configured"
-
-      - name: Send Email Notification to Jazz
-        if: steps.extract.outputs.is_nia_command == 'true'
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.JAZZ_EMAIL }}
-          password: ${{ secrets.JAZZ_EMAIL_PASSWORD }}
-          subject: "🎷🧰 Nia Communication - ${{ github.event_name }}"
-          to: ${{ secrets.JAZZ_EMAIL }}
-          from: "Nia LeSane <${{ secrets.JAZZ_EMAIL }}>"
-          body: |
-            Dear Jazz,
-
-            Nia has something to communicate.
-
-            Event Type: ${{ github.event_name }}
-            ${{ github.event_name == 'issues' && format('Issue: {0}', steps.extract.outputs.issue_title) || format('Pull Request: {0}', steps.extract.outputs.pr_title) }}
-
-            View it here:
-            ${{ github.event_name == 'issues' && steps.extract.outputs.issue_url || steps.extract.outputs.pr_url }}
-
-            Content:
-            ${{ github.event_name == 'issues' && steps.extract.outputs.issue_body || steps.extract.outputs.pr_body }}
-
-            ---
-            🎷 House of Jazzu
-            Nia LeSane - AI Agent
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-      - name: Log Communication Event
-        if: always()
-        run: |
-          echo "=== Nia Communication Event ===" >> $GITHUB_WORKSPACE/communication.log
-          echo "Timestamp: $(date -u)" >> $GITHUB_WORKSPACE/communication.log
-          echo "Event Type: ${{ github.event_name }}" >> $GITHUB_WORKSPACE/communication.log
-          echo "Is Nia Command: ${{ steps.extract.outputs.is_nia_command }}" >> $GITHUB_WORKSPACE/communication.log
-          echo "Repository: ${{ github.repository }}" >> $GITHUB_WORKSPACE/communication.log
-          echo "---" >> $GITHUB_WORKSPACE/communication.log
-
-      - name: Upload Communication Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: communication-log
-          path: communication.log
-          retention-days: 7
+elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+  echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+  echo "pr_body=${{ github.event.pull_request.body }}" >> $GITHUB_OUTPUT
+  echo "pr_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
+  IS_NIA_COMMAND=$(echo '${{ github.event.pull_request.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
+  echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
+fi

@@ -1,0 +1,5 @@
+- name: Install dependencies (verbose)
+  run: |
+    npm config set fund false
+    npm config set audit false
+    npm install --verbose

@@ -1,0 +1,4 @@
+{
+  "src": "frontend/package.json",
+  "use": "@vercel/static-build"
+}

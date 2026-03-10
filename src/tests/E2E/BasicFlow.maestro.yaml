@@ -1,0 +1,12 @@
+appId: com.houseofjazzu.nialesane
+---
+- clearState
+- launchApp
+- assertVisible: "Speak the words"
+- tapOn: "Speak the words"
+- inputText: "AddieMaeLesane33"
+- tapOn: "Verify Identity"
+- assertVisible: "Welcome, CEO"
+- tapOn: "Transmit to Creator"
+- back
+- assertVisible: "Quantum Coherence"

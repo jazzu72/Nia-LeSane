@@ -1,0 +1,25 @@
+Trinity Agents                              │
+│     ├─ NIA (Governance & ReAct)                 │
+│     ├─ SAVON (Yield & Mining)                   │
+│     └─ KANO (Security & Defense)                │
+├─────────────────────────────────────────────────┤
+│  🔌 MCP Servers                                 │
+│     ├─ Finance Bridge (BRICS/BTC)               │
+│     ├─ Security Monitor (Dark Web)              │
+│     └─ Trust Registry (Singapore PTC)           │
+├─────────────────────────────────────────────────┤
+│  📡 Observability Layer                         │
+│     ├─ Real-time WebSocket Telemetry            │
+│     ├─ Reasoning Trace Visualization            │
+│     └─ Prometheus + Grafana Monitoring          │
+├─────────────────────────────────────────────────┤
+│  🔐 Air-Gapped Vault                            │
+│     ├─ AES-256-GCM Encryption                   │
+│     ├─ MPC Multi-Signature                      │
+│     └─ Offline Signing Node                     │
+├─────────────────────────────────────────────────┤
+│  🇸🇬 Singapore VPS Hosting                      │
+│     ├─ Docker Containerization                  │
+│     ├─ NGINX Reverse Proxy                      │
+│     ├─ Cloudflare DDoS Protection               │
+│     └─ Let's Encrypt SSL/TLS
