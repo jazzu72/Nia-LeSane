@@ -1,0 +1,10 @@
+name: Quantum Enhanced
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: read
+  actions: read
+  checks: read
+  id-token: write
