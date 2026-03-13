@@ -1,0 +1,8 @@
+console/
+  CommandConsole.svelte
+  parser.ts
+  commands/
+    help.ts
+    score.ts
+    quantum.ts
+    leads.ts
