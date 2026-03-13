@@ -1,0 +1,2 @@
+def freq_to_midi(freq):
+    return 69 + 12 * np.log2(freq / 440.0)
