@@ -1,0 +1,5 @@
+lion.execute_sovereign_directive(
+    agent="BirdDog",
+    mission_type="REVENUE_STRIKE",
+    data={"grant_id": "GLOBAL-2026", "value": "1.2M SGD", "priority": "EXECUTIVE"}
+)
