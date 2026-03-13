@@ -1,0 +1,15 @@
+import redis
+import json
+import time
+import hmac
+import hashlib
+import os
+
+# Secure key for signing messages (store in env or vault)
+SECRET_KEY = os.getenv("NIA_NEXUS_KEY", "dev-key-change-me")
+
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+def sign_payload(payload: dict) -> str:
+    encoded = json.dumps(payload, sort_keys=True).encode()
+    return hmac.new(SECRET_KEY.encode(), encoded, hashlib.sha256).hexdigest()
