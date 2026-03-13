@@ -1,0 +1,5 @@
+import { startNexusListener } from "./nia/nexusListener";
+
+startNexusListener((msg) => {
+  appendToConsole(msg); // your UI method
+});
