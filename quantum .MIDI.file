@@ -1,0 +1,48 @@
+from mido import Message, MidiFile, MidiTrack, MetaMessage
+
+def generate_quantum_chord():
+    return [
+        generate_quantum_harmonic(root_frequency),
+        generate_quantum_harmonic(root_frequency * phi),
+        generate_quantum_harmonic(root_frequency * (phi**2))
+    ]
+
+def build_multitrack_midi(filename="nia_quantum_multitrack.mid", steps=8):
+    mid = MidiFile()
+    
+    # Three tracks: root, phi, phi^2
+    tracks = [MidiTrack() for _ in range(3)]
+    for t in tracks:
+        mid.tracks.append(t)
+
+    # Name tracks
+    tracks[0].append(MetaMessage('track_name', name='Root 432', time=0))
+    tracks[1].append(MetaMessage('track_name', name='Phi', time=0))
+    tracks[2].append(MetaMessage('track_name', name='Phi^2', time=0))
+
+    # Simple tempo + timebase
+    ticks_per_beat = mid.ticks_per_beat  # default 480
+    note_len = ticks_per_beat  # quarter note
+
+    for step in range(steps):
+        chord = generate_quantum_chord()
+
+        for i, freq in enumerate(chord):
+            midi_float = freq_to_midi(freq)
+            note = int(np.floor(midi_float))
+            bend = midi_to_pitchbend(midi_float, note)
+
+            # Pitch bend then note_on
+            tracks[i].append(Message('pitchwheel', pitch=bend, time=0))
+            tracks[i].append(Message('note_on', note=note, velocity=80, time=0))
+            tracks[i].append(Message('note_off', note=note, velocity=0, time=note_len))
+
+        # small gap between steps on all tracks
+        for t in tracks:
+            t.append(Message('note_off', note=0, velocity=0, time=0))
+
+    mid.save(filename)
+    return filename
+
+if __name__ == "__main__":
+    print("Saved:", build_multitrack_midi())
