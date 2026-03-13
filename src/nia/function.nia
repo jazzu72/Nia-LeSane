@@ -1,0 +1,25 @@
+export function niaInterpretDirective(payload) {
+  const { origin_agent, mission, intel } = payload;
+
+  switch (mission) {
+    case "REVENUE_STRIKE":
+      return niaNormal(
+        `BirdDog just executed a revenue strike.\nIntel:\n${JSON.stringify(intel, null, 2)}`
+      );
+
+    case "ASSET_MINT":
+      return niaNormal(
+        `Museforge has authorized a sovereign asset mint.\nDetails:\n${JSON.stringify(intel, null, 2)}`
+      );
+
+    case "SECURITY_EVENT":
+      return niaPressure(
+        `Kano has raised a security event.\nDetails:\n${JSON.stringify(intel, null, 2)}`
+      );
+
+    default:
+      return niaNormal(
+        `LION issued a directive.\n${JSON.stringify(intel, null, 2)}`
+      );
+  }
+}
