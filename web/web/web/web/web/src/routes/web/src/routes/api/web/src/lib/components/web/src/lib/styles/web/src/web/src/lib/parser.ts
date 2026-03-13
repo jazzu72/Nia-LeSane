@@ -20,3 +20,12 @@ export async function parseCommand(cmd: string): Promise<string> {
       return `Unknown command: ${command}\nType "help" for available commands.`;
   }
 }
+export function detectPressure(cmd: string): boolean {
+  const signals = [
+    "urgent", "now", "immediately", "critical", "fix", "help",
+    "deadline", "investors", "risk", "collapse", "i'm stressed",
+    "i'm overwhelmed", "this is bad"
+  ];
+
+  return signals.some(s => cmd.toLowerCase().includes(s));
+}
