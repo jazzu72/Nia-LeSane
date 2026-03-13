@@ -1,0 +1,6 @@
+nia_chord = [
+    generate_quantum_harmonic(root_frequency),
+    generate_quantum_harmonic(root_frequency * phi),
+    generate_quantum_harmonic(root_frequency * (phi**2))
+]
+  midi_notes = [freq_to_midi(f) for f in nia_chord]
