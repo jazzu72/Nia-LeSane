@@ -1,0 +1,15 @@
+web/
+  package.json
+  svelte.config.js
+  vite.config.js
+  tsconfig.json
+  src/
+    routes/
+      +page.svelte
+      api/
+        leads.ts
+        score.ts
+        quantum.ts
+    lib/
+      components/
+      styles/
