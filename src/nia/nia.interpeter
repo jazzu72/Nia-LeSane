@@ -1,0 +1,11 @@
+socket.onmessage = (event) => {
+  const payload = JSON.parse(event.data);
+
+  if (!verifySignature(payload)) {
+    appendToConsole("⚠️ Invalid directive signature. Ignoring.");
+    return;
+  }
+
+  const spoken = niaInterpretDirective(payload);
+  appendToConsole(spoken);
+};
