@@ -1,0 +1,60 @@
+<script lang="ts">
+  import { parseCommand } from './parser';
+
+  let input = '';
+  let history: { command: string; output: string }[] = [];
+
+  async function runCommand() {
+    const command = input.trim();
+    input = '';
+
+    const output = await parseCommand(command);
+    history = [...history, { command, output }];
+  }
+</script>
+
+<div class="console">
+  {#each history as item}
+    <div class="entry">
+      <div class="cmd">nia> {item.command}</div>
+      <div class="out" innerHTML={item.output}></div>
+    </div>
+  {/each}
+
+  <input
+    class="input"
+    bind:value={input}
+    on:keydown={(e) => e.key === 'Enter' && runCommand()}
+    placeholder="Type a command…"
+  />
+</div>
+
+<style>
+  .console {
+    background: #0d0d0f;
+    color: #eaeaea;
+    padding: 2rem;
+    border-radius: 16px;
+    font-family: "JetBrains Mono", monospace;
+    height: 80vh;
+    overflow-y: auto;
+    border: 1px solid #ffffff20;
+  }
+  .cmd {
+    color: #7dd3fc;
+    margin-bottom: 0.25rem;
+  }
+  .out {
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+  }
+  .input {
+    width: 100%;
+    padding: 0.75rem;
+    background: #111114;
+    border: 1px solid #ffffff20;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+  }
+</style>
