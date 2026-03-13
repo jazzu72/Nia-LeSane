@@ -1,0 +1,22 @@
+{
+  "tracks": [
+    { "freq": 431.8 },
+    { "freq": 698.4 },
+    { "freq": 1130.2 }
+  ]
+}
+function drawObserved(freq, color, amp = 40) {
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = color;
+
+    for (let x = 0; x < canvas.width; x++) {
+        const wave = Math.sin((x * freq / 8000) + time);
+        const y = (canvas.height / 2) + (wave * amp);
+
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+
+    ctx.stroke();
+}
