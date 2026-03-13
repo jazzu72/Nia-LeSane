@@ -1,0 +1,3 @@
+midi_float = freq_to_midi(freq)
+note = int(np.floor(midi_float))
+bend = midi_float - note
