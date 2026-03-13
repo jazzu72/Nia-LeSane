@@ -1,0 +1,7 @@
+def freq_to_midi(freq: float) -> float:
+    return 69 + 12 * np.log2(freq / 440.0)
+
+def midi_to_pitchbend(midi_float: float, note_int: int) -> int:
+    # fractional part → pitch bend range (-8192..8191)
+    frac = midi_float - note_int
+    return int(frac * 8192)
