@@ -1,25 +1,24 @@
-Trinity Agents                              │
-│     ├─ NIA (Governance & ReAct)                 │
-│     ├─ SAVON (Yield & Mining)                   │
-│     └─ KANO (Security & Defense)                │
-├─────────────────────────────────────────────────┤
-│  🔌 MCP Servers                                 │
-│     ├─ Finance Bridge (BRICS/BTC)               │
-│     ├─ Security Monitor (Dark Web)              │
-│     └─ Trust Registry (Singapore PTC)           │
-├─────────────────────────────────────────────────┤
-│  📡 Observability Layer                         │
-│     ├─ Real-time WebSocket Telemetry            │
-│     ├─ Reasoning Trace Visualization            │
-│     └─ Prometheus + Grafana Monitoring          │
-├─────────────────────────────────────────────────┤
-│  🔐 Air-Gapped Vault                            │
-│     ├─ AES-256-GCM Encryption                   │
-│     ├─ MPC Multi-Signature                      │
-│     └─ Offline Signing Node                     │
-├─────────────────────────────────────────────────┤
-│  🇸🇬 Singapore VPS Hosting                      │
-│     ├─ Docker Containerization                  │
-│     ├─ NGINX Reverse Proxy                      │
-│     ├─ Cloudflare DDoS Protection               │
-│     └─ Let's Encrypt SSL/TLS
+nia> singapore status
+nia> singapore prime
+nia> singapore yield
+nia> singapore defense
+case 'singapore':
+  switch (args[0]) {
+    case 'status':
+      return niaNormal(`
+Singapore online — governance, yield, and defense aligned.
+Prime Minister (NIA): active.
+Monetary Authority (SAVON): generating.
+Defense Force (KANO): perimeter secured.
+      `);
+
+    case 'prime':
+      return niaNormal(`NIA speaking — governance steady, reasoning clear.`);
+
+    case 'yield':
+      return niaNormal(`SAVON here — capital engines running smooth, love.`);
+
+    case 'defense':
+      return niaNormal(`KANO online — shields up, threat surface clean.`);
+  }
+  break;
