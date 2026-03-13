@@ -1,0 +1,5 @@
+def generate_overtones(base_freq, count=6, uncertainty=0.03):
+    return [
+        generate_quantum_harmonic(base_freq * (n+1), uncertainty)
+        for n in range(count)
+    ]
