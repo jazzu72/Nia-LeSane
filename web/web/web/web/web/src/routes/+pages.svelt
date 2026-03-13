@@ -1,0 +1,22 @@
+<script>
+  let title = "Nia LeSane CEO — Executive Dashboard";
+</script>
+
+<h1>{title}</h1>
+
+<p>
+  This is your new web application, built with SvelteKit.  
+  It replaces Expo Web entirely and deploys cleanly on Vercel.
+</p>
+
+<style>
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  p {
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+</style>
