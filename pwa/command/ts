@@ -1,0 +1,17 @@
+export async function runGrantSearch(query: string) {
+  const res = await fetch("/api/grants", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query })
+  });
+  return res.json();
+}
+
+export async function runMintCheck(stats: any) {
+  const res = await fetch("/api/mint", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(stats)
+  });
+  return res.json();
+}
