@@ -1,11 +1,1 @@
-- name: Install dependencies
-  working-directory: .
-  run: |
-    echo "Node version:"
-    node -v
-    echo "NPM version:"
-    npm -v
-    echo "Listing directory:"
-    ls -al
-    echo "Installing dependencies..."
-    npm ci --verbose
+"react-dom": "18.2.0"
