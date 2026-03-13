@@ -1,0 +1,21 @@
+def broadcast_nexus_win(agent_name: str, data: dict, event_type="WIN"):
+    timestamp = int(time.time())
+
+    payload = {
+        "origin": agent_name,
+        "event_type": event_type,
+        "intel": data,
+        "priority": "STRATEGIC_STRIKE",
+        "timestamp": timestamp
+    }
+
+    payload["signature"] = sign_payload(payload)
+
+    # Publish to the main Nexus stream
+    r.publish("nia:nexus:stream", json.dumps(payload))
+
+    # Optional: store last 100 events for replay
+    r.lpush("nia:nexus:history", json.dumps(payload))
+    r.ltrim("nia:nexus:history", 0, 99)
+
+    print(f"📡 {agent_name} broadcasted a {event_type} event to the Nexus.")
