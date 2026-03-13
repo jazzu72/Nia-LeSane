@@ -1,0 +1,11 @@
+pwa/
+  package.json
+  vite.config.ts
+  tsconfig.json
+  public/
+    manifest.webmanifest
+    icons/
+  src/
+    main.tsx
+    App.tsx
+    service-worker.ts
