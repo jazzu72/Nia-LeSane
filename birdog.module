@@ -1,0 +1,28 @@
+import requests
+
+def search_grants(query: str, api_key: str):
+    url = f"https://serpapi.com/search?q={query}+grants+2026&api_key={api_key}"
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        results = response.json()
+    except Exception as e:
+        return {"error": f"Request failed: {e}"}
+
+    found_money = []
+
+    for item in results.get("organic_results", []):
+        snippet = item.get("snippet", "").lower()
+        if "deadline" in snippet:
+            found_money.append({
+                "source": item.get("title"),
+                "link": item.get("link"),
+                "intelligence": "High Priority: Potential Win found by BirdDog"
+            })
+
+    return {"results": found_money}
+
+# Example call
+if __name__ == "__main__":
+    print(search_grants("Minority Business Foundation", api_key="YOUR_KEY"))
