@@ -1,0 +1,11 @@
+export function niaDecision({ threat, distortion, endurance, directive }) {
+  return `
+<b>Nia Decision Protocol</b><br>
+Slow the moment down.<br>
+${distortion}<br>
+The real threat is: ${threat}.<br>
+We can endure: ${endurance}.<br><br>
+<b>Directive:</b> ${directive}<br><br>
+Stay steady. We’re still in control.
+  `;
+}
