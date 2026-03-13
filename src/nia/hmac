@@ -1,0 +1,6 @@
+def verify_signature(payload, secret_key):
+    signature = payload.get("signature")
+    unsigned = {k: v for k, v in payload.items() if k != "signature"}
+    encoded = json.dumps(unsigned, sort_keys=True).encode()
+    expected = hmac.new(secret_key.encode(), encoded, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(signature, expected)
