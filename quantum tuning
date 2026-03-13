@@ -1,0 +1,4 @@
+bend_value = int((midi_float - note) * 8192)
+
+track.append(Message('pitchwheel', pitch=bend_value, time=0))
+track.append(Message('note_on', note=note, velocity=64, time=0))
