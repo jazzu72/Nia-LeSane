@@ -1,0 +1,18 @@
+{
+  "name": "nia-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "latest",
+    "@sveltejs/kit": "latest",
+    "svelte": "latest",
+    "typescript": "latest",
+    "vite": "latest"
+  }
+}
