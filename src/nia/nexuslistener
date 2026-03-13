@@ -1,0 +1,22 @@
+// /src/nia/nexusListener.ts
+import { niaNormal, niaPressure } from "./voice";
+
+export function startNexusListener(onEvent: (msg: string) => void) {
+  const socket = new WebSocket("wss://your-backend/ws/nexus");
+
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    const { origin, event_type, intel, priority } = data;
+
+    const formatted = niaNormal(
+      `${origin} reported a ${event_type}.\n\nDetails:\n${JSON.stringify(intel, null, 2)}`
+    );
+
+    onEvent(formatted);
+  };
+
+  socket.onclose = () => {
+    setTimeout(() => startNexusListener(onEvent), 2000);
+  };
+}
