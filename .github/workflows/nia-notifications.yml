@@ -1,14 +1,13 @@
-if [[ "${{ github.event_name }}" == "issues" ]]; then
-  echo "issue_title=${{ github.event.issue.title }}" >> $GITHUB_OUTPUT
-  echo "issue_body=${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
-  echo "issue_url=${{ github.event.issue.html_url }}" >> $GITHUB_OUTPUT
-  IS_NIA_COMMAND=$(echo '${{ github.event.issue.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
-  echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
-
-elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-  echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
-  echo "pr_body=${{ github.event.pull_request.body }}" >> $GITHUB_OUTPUT
-  echo "pr_url=${{ github.event.pull_request.html_url }}" >> $GITHUB_OUTPUT
-  IS_NIA_COMMAND=$(echo '${{ github.event.pull_request.title }}' | grep -q '\[NIA\]' && echo 'true' || echo 'false')
-  echo "is_nia_command=$IS_NIA_COMMAND" >> $GITHUB_OUTPUT
-fi
+# Hardened Input Extraction
+{
+  echo "is_nia_command=$(echo "${{ github.event.issue.title || github.event.pull_request.title }}" | grep -q '\[NIA\]' && echo 'true' || echo 'false')"
+  
+  # Use heredoc for body/title to handle multi-line and special characters
+  echo "issue_title<<EOF"
+  echo "${{ github.event.issue.title || github.event.pull_request.title }}"
+  echo "EOF"
+  
+  echo "issue_body<<EOF"
+  echo "${{ github.event.issue.body || github.event.pull_request.body }}"
+  echo "EOF"
+} >> $GITHUB_OUTPUT
