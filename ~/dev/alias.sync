@@ -1,0 +1,2 @@
+echo "alias sync='git add . && git commit -m \"LION Sync $(date)\" && git push origin main'" >> ~/.bashrc
+source ~/.bashrc
