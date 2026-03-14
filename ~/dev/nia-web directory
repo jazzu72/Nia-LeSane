@@ -1,2 +1,9 @@
-git config --global user.name "jazzu72"
-git config --global user.email "lesane1972@gmail.com"
+
+# Install Vercel CLI
+npm install -g vercel
+
+# Log in (This will provide a URL to authenticate via browser)
+vercel login
+
+# Link your current directory to a Vercel Project
+vercel
