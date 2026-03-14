@@ -1,13 +1,37 @@
-# Hardened Input Extraction
-{
-  echo "is_nia_command=$(echo "${{ github.event.issue.title || github.event.pull_request.title }}" | grep -q '\[NIA\]' && echo 'true' || echo 'false')"
-  
-  # Use heredoc for body/title to handle multi-line and special characters
-  echo "issue_title<<EOF"
-  echo "${{ github.event.issue.title || github.event.pull_request.title }}"
-  echo "EOF"
-  
-  echo "issue_body<<EOF"
-  echo "${{ github.event.issue.body || github.event.pull_request.body }}"
-  echo "EOF"
-} >> $GITHUB_OUTPUT
+- name: Hardened Input Extraction
+  id: extract
+  run: |
+    # Determine title
+    if [[ -n "$ISSUE_TITLE" ]]; then
+      TITLE="$ISSUE_TITLE"
+      BODY="$ISSUE_BODY"
+    else
+      TITLE="$PR_TITLE"
+      BODY="$PR_BODY"
+    fi
+
+    # Detect NIA command
+    if echo "$TITLE" | grep -qi '\[NIA\]'; then
+      echo "is_nia_command=true" >> $GITHUB_OUTPUT
+    else
+      echo "is_nia_command=false" >> $GITHUB_OUTPUT
+    fi
+
+    # Safe multiline heredoc for title
+    {
+      echo "issue_title<<EOF"
+      echo "$TITLE"
+      echo "EOF"
+    } >> $GITHUB_OUTPUT
+
+    # Safe multiline heredoc for body
+    {
+      echo "issue_body<<EOF"
+      echo "$BODY"
+      echo "EOF"
+    } >> $GITHUB_OUTPUT
+  env:
+    ISSUE_TITLE: ${{ github.event.issue.title }}
+    ISSUE_BODY: ${{ github.event.issue.body }}
+    PR_TITLE: ${{ github.event.pull_request.title }}
+    PR_BODY: ${{ github.event.pull_request.body }}
