@@ -60,10 +60,10 @@ class TestAerSimulator:
         circuit = QuantumCircuit(1, 1)
         circuit.h(0)
         circuit.measure(0, 0)
-        
+
         simulator = Aer.get_backend('qasm_simulator')
         # Test that we can create a job (actual execution requires credentials)
-        assert simulator.name() == 'qasm_simulator'
+        assert simulator.name == 'qasm_simulator'
 
 
 if __name__ == '__main__':
