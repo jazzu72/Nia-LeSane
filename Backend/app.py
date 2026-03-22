@@ -93,7 +93,10 @@ def require_owner_auth(f):
 # POWER LAYER - Self-Improvement System
 # ============================================
 class PowerLayer:
-    """Self-improvement system that monitors and optimizes system performance"""
+    """
+    Self-improvement system that monitors and optimizes system performance
+    With AI-powered recommendations
+    """
     
     def __init__(self):
         self.metrics = {
@@ -101,52 +104,131 @@ class PowerLayer:
             "requests": 0,
             "errors": 0,
             "start_time": time.time(),
-            "uptime_seconds": 0
+            "uptime_seconds": 0,
+            "avg_response_time": 0,
+            "peak_usage": 0
         }
         self.threshold = 100
         self.status = "stable"
+        self.recommendations = []
+        self.response_times = []
     
-    def record_request(self):
-        """Record a new request"""
+    def record_request(self, response_time=0):
+        """Record a new request with response time"""
         self.metrics["requests"] += 1
         self.metrics["usage"] += 1
+        
+        if response_time > 0:
+            self.response_times.append(response_time)
+            if len(self.response_times) > 100:
+                self.response_times.pop(0)
+            self.metrics["avg_response_time"] = sum(self.response_times) / len(self.response_times)
+        
+        if self.metrics["usage"] > self.metrics.get("peak_usage", 0):
+            self.metrics["peak_usage"] = self.metrics["usage"]
+        
         self.evaluate()
     
     def record_error(self):
         """Record an error occurrence"""
         self.metrics["errors"] += 1
         self.evaluate()
+        self._generate_recommendations()
     
     def evaluate(self):
         """Evaluate system health and determine status"""
         self.metrics["uptime_seconds"] = int(time.time() - self.metrics["start_time"])
         
+        error_rate = 0
+        if self.metrics["requests"] > 0:
+            error_rate = (self.metrics["errors"] / self.metrics["requests"]) * 100
+        
         if self.metrics["usage"] > self.threshold:
             self.status = "upgrade_system"
+        elif error_rate > 10:
+            self.status = "critical"
+        elif error_rate > 5:
+            self.status = "warning"
         else:
             self.status = "stable"
         
+        self._generate_recommendations()
         return self.status
     
+    def _generate_recommendations(self):
+        """Generate AI-powered recommendations based on metrics"""
+        self.recommendations = []
+        
+        if self.metrics["usage"] > self.threshold * 0.8:
+            self.recommendations.append({
+                "type": "scale",
+                "message": "System approaching capacity. Consider scaling infrastructure.",
+                "priority": "high"
+            })
+        
+        if self.metrics.get("avg_response_time", 0) > 1000:
+            self.recommendations.append({
+                "type": "performance",
+                "message": "High response time detected. Optimize queries and consider caching.",
+                "priority": "medium"
+            })
+        
+        error_rate = 0
+        if self.metrics["requests"] > 0:
+            error_rate = (self.metrics["errors"] / self.metrics["requests"]) * 100
+        
+        if error_rate > 10:
+            self.recommendations.append({
+                "type": "stability",
+                "message": f"High error rate: {error_rate:.1f}%. Investigate errors immediately.",
+                "priority": "critical"
+            })
+        
+        if not self.recommendations:
+            self.recommendations.append({
+                "type": "optimize",
+                "message": "System running optimally. Great job!",
+                "priority": "low"
+            })
+    
     def get_status(self):
-        """Get current system status"""
+        """Get current system status with all metrics"""
         self.evaluate()
         return {
             "status": self.status,
             "metrics": self.metrics.copy(),
             "threshold": self.threshold,
-            "recommendation": self._get_recommendation()
+            "recommendations": self.recommendations,
+            "health_score": self._calculate_health_score()
         }
     
-    def _get_recommendation(self):
-        """Get recommendation based on current status"""
-        if self.status == "upgrade_system":
-            return "System usage high - consider scaling or optimizing"
-        return "System running optimally"
+    def _calculate_health_score(self):
+        """Calculate a health score from 0-100"""
+        score = 100
+        
+        if self.metrics["requests"] > 0:
+            error_rate = (self.metrics["errors"] / self.metrics["requests"]) * 100
+            score -= min(error_rate * 5, 40)
+        
+        usage_ratio = self.metrics["usage"] / max(self.threshold, 1)
+        if usage_ratio > 0.8:
+            score -= 20
+        elif usage_ratio > 0.5:
+            score -= 10
+        
+        if self.metrics.get("avg_response_time", 0) > 2000:
+            score -= 20
+        elif self.metrics.get("avg_response_time", 0) > 1000:
+            score -= 10
+        
+        return max(0, int(score))
     
     def reset_metrics(self):
-        """Reset usage metrics (e.g., hourly/daily)"""
+        """Reset usage metrics"""
         self.metrics["usage"] = 0
+        self.metrics["errors"] = 0
+        self.response_times = []
+        self.metrics["avg_response_time"] = 0
         self.evaluate()
 
 # Initialize Power Layer

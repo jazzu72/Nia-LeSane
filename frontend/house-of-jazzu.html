@@ -101,6 +101,26 @@
       color: #fff;
     }
 
+    /* Power Layer Dashboard Styles */
+    .power-stats { display: flex; justify-content: space-around; margin: 20px 0; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 2rem; font-weight: bold; color: #667eea; }
+    .stat-label { font-size: 0.8rem; color: #888; }
+    .metrics { background: #1a1a1a; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: left; }
+    .metrics p { margin: 5px 0; color: #aaa; }
+    .recs { margin: 15px 0; text-align: left; }
+    .recs ul { list-style: none; padding: 0; }
+    .recs li { padding: 8px; margin: 5px 0; border-radius: 5px; font-size: 0.9rem; }
+    .rec-critical { background: #ff4444; color: white; }
+    .rec-high { background: #ff8800; color: white; }
+    .rec-medium { background: #ffaa00; color: black; }
+    .rec-low { background: #44bb44; color: white; }
+    .add-lead-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .add-lead-form input { padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1a1a1a; color: white; }
+    .leads-list { list-style: none; padding: 0; text-align: left; }
+    .leads-list li { padding: 10px; border-bottom: 1px solid #333; }
+
+
     .contact-info {
       text-align: left;
       background: #1a1a1a;
@@ -213,7 +233,7 @@
     <div class="card">
       <h2>🚀 Nia Prime</h2>
       <p>Your intelligent system for opportunity discovery, automation, and growth.</p>
-      <button class="btn btn-launch" onclick="requirePassword()">Launch App</button>
+      <button class="btn btn-launch" onclick="showPowerLayer()">⚡ Launch Dashboard</button>
     </div>
 
 
@@ -245,6 +265,52 @@
       <a href="https://t.me/+1234567890" class="btn btn-telegram">
         Message on Telegram
       </a>
+    </div>
+
+
+    <!-- Power Layer Dashboard -->
+    <div class="card" id="powerSection" style="display: none;">
+      <h2>⚡ Power Layer Dashboard</h2>
+      
+      <div class="power-stats">
+        <div class="stat">
+          <span class="stat-value" id="healthScore">100</span>
+          <span class="stat-label">Health Score</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="systemStatus">stable</span>
+          <span class="stat-label">Status</span>
+        </div>
+      </div>
+      
+      <div class="metrics">
+        <p>Requests: <span id="reqCount">0</span></p>
+        <p>Usage: <span id="usageCount">0</span> / <span id="threshold">100</span></p>
+        <p>Errors: <span id="errorCount">0</span></p>
+        <p>Uptime: <span id="uptime">0s</span></p>
+      </div>
+      
+      <div id="recommendations"></div>
+      
+      <button class="btn" onclick="refreshPower()">🔄 Refresh</button>
+      <button class="btn" onclick="resetMetrics()">🗑️ Reset</button>
+    </div>
+
+
+    <!-- Leads Management -->
+    <div class="card" id="leadsSection" style="display: none;">
+      <h2>👥 Leads Management</h2>
+      
+      <div class="add-lead-form">
+        <input type="text" id="leadName" placeholder="Name" />
+        <input type="email" id="leadEmail" placeholder="Email" />
+        <input type="tel" id="leadPhone" placeholder="Phone" />
+        <button class="btn" onclick="addLead()">➕ Add Lead</button>
+      </div>
+      
+      <div id="leadsList"></div>
+      
+      <button class="btn" onclick="loadLeads()">🔄 Load Leads</button>
     </div>
 
 
@@ -333,6 +399,107 @@
         verifyPassword();
       }
     });
+    
+    function showPowerLayer() {
+      document.getElementById('powerSection').style.display = 'block';
+      document.getElementById('leadsSection').style.display = 'block';
+      refreshPower();
+    }
+    
+    // ============================================
+    // POWER LAYER FUNCTIONS
+    // ============================================
+    
+    async function refreshPower() {
+      const data = await apiCall('/power');
+      if (data.success) {
+        const pl = data.power_layer;
+        document.getElementById('healthScore').textContent = pl.health_score || 100;
+        document.getElementById('systemStatus').textContent = pl.status || 'unknown';
+        document.getElementById('reqCount').textContent = pl.metrics?.requests || 0;
+        document.getElementById('usageCount').textContent = pl.metrics?.usage || 0;
+        document.getElementById('threshold').textContent = pl.threshold || 100;
+        document.getElementById('errorCount').textContent = pl.metrics?.errors || 0;
+        
+        const uptime = pl.metrics?.uptime_seconds || 0;
+        document.getElementById('uptime').textContent = formatUptime(uptime);
+        
+        // Show recommendations
+        const recs = pl.recommendations || [];
+        const recDiv = document.getElementById('recommendations');
+        if (recs.length > 0) {
+          recDiv.innerHTML = '<div class="recs"><strong>💡 Recommendations:</strong><ul>' + 
+            recs.map(r => `<li class="rec-${r.priority}">[${r.priority.toUpperCase()}] ${r.message}</li>`).join('') + 
+            '</ul></div>';
+        }
+      }
+    }
+    
+    function formatUptime(seconds) {
+      if (seconds < 60) return seconds + 's';
+      if (seconds < 3600) return Math.floor(seconds/60) + 'm';
+      if (seconds < 86400) return Math.floor(seconds/3600) + 'h';
+      return Math.floor(seconds/86400) + 'd';
+    }
+    
+    async function resetMetrics() {
+      if (confirm('Reset all metrics? This cannot be undone.')) {
+        const data = await apiCall('/power/reset', { method: 'POST' });
+        if (data.success) {
+          alert('Metrics reset successfully!');
+          refreshPower();
+        } else {
+          alert('Failed: ' + data.message);
+        }
+      }
+    }
+    
+    // ============================================
+    // LEADS MANAGEMENT FUNCTIONS
+    // ============================================
+    
+    async function addLead() {
+      const name = document.getElementById('leadName').value;
+      const email = document.getElementById('leadEmail').value;
+      const phone = document.getElementById('leadPhone').value;
+      
+      if (!name || !email) {
+        alert('Name and email are required');
+        return;
+      }
+      
+      const data = await apiCall('/add', {
+        method: 'POST',
+        body: JSON.stringify({ name, email, phone })
+      });
+      
+      if (data.success) {
+        alert('Lead added successfully!');
+        document.getElementById('leadName').value = '';
+        document.getElementById('leadEmail').value = '';
+        document.getElementById('leadPhone').value = '';
+        loadLeads();
+      } else {
+        alert('Failed: ' + data.message);
+      }
+    }
+    
+    async function loadLeads() {
+      const data = await apiCall('/leads');
+      const list = document.getElementById('leadsList');
+      
+      if (data.success && data.leads) {
+        if (data.leads.length === 0) {
+          list.innerHTML = '<p>No leads yet.</p>';
+        } else {
+          list.innerHTML = '<ul class="leads-list">' + 
+            data.leads.map(l => `<li><strong>${l.name}</strong> - ${l.email} ${l.phone ? '| ' + l.phone : ''}</li>`).join('') + 
+            '</ul>';
+        }
+      } else {
+        list.innerHTML = '<p>Failed to load leads.</p>';
+      }
+    }
   </script>
 </body>
 </html>
