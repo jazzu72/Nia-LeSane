@@ -1,0 +1,12 @@
+services:
+  - name: nia-prime-backend
+    type: web_service
+    region: oregon
+    ownerId: tea-d4nlb3chg0os739ehiog
+    repo: https://github.com/jazzu72/Nia-LeSane.git
+    branch: launch/nia-prime-lite
+    rootDirectory: Backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app -b 0.0.0.0:$PORT
+    env: python
+    plan: free

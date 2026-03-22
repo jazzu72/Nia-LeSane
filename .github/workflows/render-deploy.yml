@@ -1,0 +1,30 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [launch/nia-prime-lite]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Render
+        run: |
+          curl -X POST "https://api.render.com/v1/services" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "nia-prime-backend",
+              "ownerId": "tea-d4nlb3chg0os739ehiog",
+              "type": "web_service",
+              "region": "oregon",
+              "repo": "https://github.com/jazzu72/Nia-LeSane",
+              "branch": "launch/nia-prime-lite",
+              "rootDirectory": "Backend",
+              "buildCommand": "pip install -r requirements.txt",
+              "startCommand": "gunicorn app:app -b 0.0.0.0:$PORT",
+              "env": "python",
+              "plan": "free"
+            }'
