@@ -26,6 +26,30 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
+# ============================================
+# SIMPLE API KEY & RATE LIMITING
+# ============================================
+API_KEY = os.environ.get("API_KEY", "nia_enterprise_key_2026")
+
+# Rate limiting: 1 call per 2 seconds per IP
+RATE_LIMIT_WINDOW = 2  # seconds
+last_call = {}
+
+def authorized():
+    """Check API key from header"""
+    return request.headers.get("x-api-key") == API_KEY
+
+def rate_limit():
+    """Simple rate limit: 1 request per 2 seconds per IP"""
+    ip = request.remote_addr
+    now = time.time()
+    
+    if ip in last_call:
+        if now - last_call[ip] < RATE_LIMIT_WINDOW:
+            return False
+    last_call[ip] = now
+    return True
+
 # Enterprise Configuration
 app.config.update(
     JSON_SORT_KEYS=False,
@@ -505,26 +529,16 @@ def before_request():
     g.start_time = time.time()
     g.session_id = str(uuid.uuid4())
     
-    ip = request.remote_addr
-    tier = request.args.get("tier", "free")
-    limit = security.RATE_LIMITS.get(tier, security.RATE_LIMITS["free"])
+    # Skip rate limiting for health check
+    if request.endpoint == 'health':
+        return None
     
-    if not hasattr(app, '_rate_limits'):
-        app._rate_limits = {}
-    
-    now = time.time()
-    if ip not in app._rate_limits:
-        app._rate_limits[ip] = []
-    
-    app._rate_limits[ip] = [t for t in app._rate_limits[ip] if now - t < limit["window"]]
-    
-    if len(app._rate_limits[ip]) >= limit["requests"]:
+    # Rate limiting: 1 call per 2 seconds per IP
+    if not rate_limit():
         return jsonify({
             "error": "rate_limit_exceeded",
-            "message": f"Rate limit: {limit['requests']} req/{limit['window']}s"
+            "message": f"Rate limit: 1 request per {RATE_LIMIT_WINDOW} seconds"
         }), 429
-    
-    app._rate_limits[ip].append(now)
 
 @app.after_request
 def after_request(response):
@@ -540,28 +554,23 @@ def after_request(response):
     return response
 
 # ============================================
-# AUTH DECORATOR
+# AUTH DECORATOR - SIMPLE
 # ============================================
 def require_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        api_key = request.headers.get("X-API-Key") or request.args.get("api_key")
-        if api_key:
-            key_data = auth.verify_api_key(api_key)
-            if key_data:
-                g.auth_user = key_data
-                return f(*args, **kwargs)
-        
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            g.auth_user = {"type": "bearer", "tier": "enterprise"}
+        # Check simple API key (x-api-key header)
+        if authorized():
+            g.auth_user = {"type": "api_key", "tier": "enterprise"}
             return f(*args, **kwargs)
         
+        # Check password (legacy)
         password = request.headers.get("X-Password") or request.args.get("password")
         if password and hmac.compare_digest(password, security.PASSWORD):
             g.auth_user = {"type": "password", "tier": "owner"}
             return f(*args, **kwargs)
         
+        # Check secret key (legacy)
         secret = request.headers.get("X-Secret-Key") or request.args.get("secret")
         if secret and hmac.compare_digest(secret, security.SECRET_KEY):
             g.auth_user = {"type": "secret", "tier": "owner"}
@@ -571,7 +580,7 @@ def require_auth(f):
         
         return jsonify({
             "error": "unauthorized",
-            "message": "Valid authentication required"
+            "message": "Valid authentication required. Use x-api-key header or X-Password."
         }), 401
     
     return decorated

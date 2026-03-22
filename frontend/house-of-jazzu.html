@@ -538,13 +538,12 @@
       }
     }
     
-    // Make API call with secret key
+    // Make API call with API key
     async function apiCall(endpoint, options = {}) {
-      const secret = sessionStorage.getItem('jazzu_secret') || OWNER_SECRET_KEY;
       const url = API_CONFIG.baseUrl + endpoint;
       
       const headers = {
-        'X-Secret-Key': secret,
+        'X-API-Key': 'nia_enterprise_key_2026',
         'Content-Type': 'application/json',
         ...options.headers
       };
@@ -687,7 +686,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Password': PASSWORD
+            'X-API-Key': 'nia_enterprise_key_2026'
           },
           body: JSON.stringify({ message: text })
         });
