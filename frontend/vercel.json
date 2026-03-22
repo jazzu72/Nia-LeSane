@@ -1,0 +1,8 @@
+{
+  "buildCommand": "echo 'Static site'",
+  "outputDirectory": ".",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/house-of-jazzu.html" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "nia-le-sane-frontend",
+  "version": "3.0.0",
+  "description": "Nia Prime Enterprise Frontend",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
