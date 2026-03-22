@@ -132,6 +132,59 @@
     .rec-high { background: #ff8800; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; }
     .rec-medium { background: #ffaa00; color: black; padding: 12px; border-radius: 8px; margin: 8px 0; }
     .rec-low { background: #44bb44; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; }
+    
+    /* ENTERPRISE DASHBOARD STYLES */
+    .enterprise-badge { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+    .badge:nth-child(1) { background: linear-gradient(135deg, #ffd700, #ffaa00); color: black; }
+    .badge:nth-child(2) { background: #0066cc; color: white; }
+    .badge:nth-child(3) { background: #4285f4; color: white; }
+    .badge:nth-child(4) { background: #34a853; color: white; }
+    
+    .health-gauge-large { text-align: center; margin: 20px 0; }
+    .gauge-circle { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(102,126,234,0.5); }
+    .gauge-number { font-size: 2.5rem; font-weight: bold; color: white; }
+    .gauge-label { font-size: 0.7rem; color: rgba(255,255,255,0.8); }
+    .status-badge-large { display: inline-block; margin-top: 10px; padding: 8px 20px; border-radius: 20px; background: #34a853; color: white; font-weight: bold; text-transform: uppercase; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+    .stat-box { background: #1a1a1a; padding: 15px; border-radius: 10px; text-align: center; }
+    .stat-icon { font-size: 1.5rem; margin-bottom: 5px; }
+    .stat-box .stat-value { font-size: 1.2rem; font-weight: bold; color: #667eea; }
+    .stat-box .stat-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+    
+    .rates-row { display: flex; gap: 10px; margin: 15px 0; }
+    .rate-card { flex: 1; background: #1a1a1a; padding: 12px; border-radius: 10px; text-align: center; }
+    .rate-label { display: block; font-size: 0.7rem; color: #888; }
+    .rate-value { font-size: 1.2rem; font-weight: bold; color: #34a853; }
+    
+    .panel { background: #1a1a1a; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+    .panel-header { background: linear-gradient(135deg, #667eea22, #764ba222); padding: 12px 15px; font-weight: bold; border-bottom: 1px solid #333; }
+    .panel-body { padding: 15px; }
+    .pred-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333; }
+    .pred-item:last-child { border: none; }
+    .pred-item span { color: #888; }
+    .pred-item strong { color: #667eea; }
+    
+    .incident-critical { background: #ff4444; color: white; padding: 10px; border-radius: 5px; margin: 5px 0; }
+    .incident-warning { background: #ff8800; color: white; padding: 10px; border-radius: 5px; margin: 5px 0; }
+    .success { color: #34a853; }
+    .info { color: #4285f4; }
+    
+    .rec-priority { font-weight: bold; margin-right: 10px; }
+    .rec-message { flex: 1; }
+    .rec-action { color: #888; font-size: 0.9rem; }
+    .rec-critical { background: #ff4444; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; display: flex; align-items: center; }
+    .rec-high { background: #ff8800; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; display: flex; align-items: center; }
+    .rec-medium { background: #ffaa00; color: black; padding: 12px; border-radius: 8px; margin: 8px 0; display: flex; align-items: center; }
+    .rec-info { background: #4285f4; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; display: flex; align-items: center; }
+    
+    .quick-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .quick-actions .btn { flex: 1; min-width: 120px; }
+    .btn-primary { background: #667eea; }
+    .btn-warning { background: #ff8800; color: white; }
+    .btn-info { background: #4285f4; }
+    .btn-success { background: #34a853; }
 
 
     .contact-info {
@@ -283,57 +336,105 @@
 
     <!-- Power Layer Dashboard -->
     <div class="card" id="powerSection" style="display: none;">
-      <h2>⚡ Power Layer Dashboard ⭐⭐⭐⭐⭐</h2>
+      <h2>⚡ Nia Prime Enterprise Dashboard ⭐⭐⭐⭐⭐</h2>
       
-      <div class="power-stats">
-        <div class="stat">
-          <span class="stat-value" id="healthScore">100</span>
-          <span class="stat-label">Health Score</span>
+      <!-- Enterprise Header -->
+      <div class="enterprise-badge">
+        <span class="badge">$20M BUDGET</span>
+        <span class="badge">EX-IBM</span>
+        <span class="badge">EX-GOOGLE</span>
+        <span class="badge">v3.0</span>
+      </div>
+      
+      <!-- Health Score -->
+      <div class="health-gauge-large">
+        <div class="gauge-circle" id="healthCircle">
+          <span class="gauge-number" id="healthScore">100</span>
+          <span class="gauge-label">HEALTH</span>
         </div>
-        <div class="stat">
-          <span class="stat-value" id="systemStatus">stable</span>
-          <span class="stat-label">Status</span>
+        <div class="status-badge-large" id="systemStatus">optimal</div>
+      </div>
+      
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="reqCount">0</div>
+          <div class="stat-label">Requests</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="usageCount">0</div>
+          <div class="stat-label">Usage</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">❌</div>
+          <div class="stat-value" id="errorCount">0</div>
+          <div class="stat-label">Errors</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-value" id="uptime">0s</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">🚀</div>
+          <div class="stat-value" id="totalReqs">0</div>
+          <div class="stat-label">Total Ever</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" id="avgResponse">0ms</div>
+          <div class="stat-label">Avg Response</div>
         </div>
       </div>
       
-      <div class="metrics">
-        <p>Requests: <span id="reqCount">0</span></p>
-        <p>Usage: <span id="usageCount">0</span> / <span id="threshold">100</span></p>
-        <p>Errors: <span id="errorCount">0</span></p>
-        <p>Uptime: <span id="uptime">0s</span></p>
-        <p>Total Requests: <span id="totalReqs">0</span></p>
-        <p>Avg Response: <span id="avgResponse">0ms</span></p>
+      <!-- Cache & Success Rates -->
+      <div class="rates-row">
+        <div class="rate-card">
+          <span class="rate-label">Cache Hit Rate</span>
+          <span class="rate-value" id="cacheRate">0%</span>
+        </div>
+        <div class="rate-card">
+          <span class="rate-label">Success Rate</span>
+          <span class="rate-value" id="successRate">100%</span>
+        </div>
+        <div class="rate-card">
+          <span class="rate-label">Threshold</span>
+          <span class="rate-value" id="thresholdDisplay">1000</span>
+        </div>
       </div>
       
-      <!-- Prediction Section -->
-      <div class="prediction-panel" id="predictionPanel">
-        <h3>🔮 AI Predictions</h3>
-        <div id="prediction"></div>
+      <!-- AI Prediction -->
+      <div class="panel prediction-panel">
+        <div class="panel-header">
+          <span>🔮 AI Traffic Prediction</span>
+        </div>
+        <div class="panel-body" id="prediction"></div>
       </div>
       
-      <!-- Alerts Section -->
-      <div class="alerts-panel" id="alertsPanel">
-        <h3>🚨 Alerts</h3>
-        <div id="alerts"></div>
+      <!-- Incidents -->
+      <div class="panel incidents-panel">
+        <div class="panel-header">
+          <span>🚨 Active Incidents</span>
+        </div>
+        <div class="panel-body" id="incidents"></div>
       </div>
       
-      <!-- Self-Healing Section -->
-      <div class="healing-panel" id="healingPanel">
-        <h3>🧬 Self-Healing Actions</h3>
-        <div id="selfHealing"></div>
-      </div>
-      
-      <!-- Recommendations Section -->
-      <div class="recommendations-panel">
-        <h3>💡 AI Recommendations</h3>
-        <div id="recommendations"></div>
+      <!-- Recommendations -->
+      <div class="panel recommendations-panel">
+        <div class="panel-header">
+          <span>💡 AI Recommendations</span>
+        </div>
+        <div class="panel-body" id="recommendations"></div>
       </div>
       
       <!-- Quick Actions -->
       <div class="quick-actions">
-        <button class="btn" onclick="refreshPower()">🔄 Refresh</button>
-        <button class="btn" onclick="resetMetrics()">🗑️ Reset</button>
-        <button class="btn" onclick="showAudit()">📊 Audit Log</button>
+        <button class="btn btn-primary" onclick="refreshPower()">🔄 Refresh</button>
+        <button class="btn btn-warning" onclick="resetMetrics()">🗑️ Reset</button>
+        <button class="btn btn-info" onclick="showAudit()">📊 Audit</button>
+        <button class="btn btn-success" onclick="showAnalytics()">📈 Analytics</button>
       </div>
     </div>
 
@@ -452,48 +553,52 @@
     // ============================================
     
     async function refreshPower() {
-      const data = await apiCall('/power');
+      const data = await apiCall('/api/v1/power');
       if (data.success) {
         const pl = data.power_layer;
+        
+        // Health score
         document.getElementById('healthScore').textContent = pl.health_score || 100;
-        document.getElementById('systemStatus').textContent = pl.status || 'unknown';
+        
+        // Status
+        document.getElementById('systemStatus').textContent = pl.status || 'optimal';
+        
+        // Stats
         document.getElementById('reqCount').textContent = pl.metrics?.requests || 0;
         document.getElementById('usageCount').textContent = pl.metrics?.usage || 0;
-        document.getElementById('threshold').textContent = pl.threshold || 100;
         document.getElementById('errorCount').textContent = pl.metrics?.errors || 0;
         document.getElementById('totalReqs').textContent = pl.metrics?.total_requests_ever || 0;
         document.getElementById('avgResponse').textContent = (pl.metrics?.avg_response_time || 0).toFixed(0) + 'ms';
         
         const uptime = pl.metrics?.uptime_seconds || 0;
-        document.getElementById('uptime').textContent = formatUptime(uptime);
+        document.getElementById('uptime').textContent = pl.uptime_formatted || formatUptime(uptime);
+        
+        // Rates
+        document.getElementById('cacheRate').textContent = (pl.cache_hit_rate || 0).toFixed(1) + '%';
+        document.getElementById('successRate').textContent = (pl.success_rate || 100).toFixed(1) + '%';
+        document.getElementById('thresholdDisplay').textContent = pl.threshold || 1000;
         
         // Prediction
         const pred = pl.prediction || {};
         const predDiv = document.getElementById('prediction');
-        if (pred.predicted && pred.predicted !== 'collecting_data') {
-          predDiv.innerHTML = `<p>Trend: ${pred.current_trend || 'N/A'}</p>
-            <p>1h projection: ${pred.projected_usage_1h || 'N/A'}</p>
-            <p>24h projection: ${pred.projected_usage_24h || 'N/A'}</p>`;
+        if (pred.status === 'insufficient_data') {
+          predDiv.innerHTML = '<p class="info">🔄 Collecting data for AI predictions...</p>';
         } else {
-          predDiv.innerHTML = '<p>🔄 Collecting data for predictions...</p>';
+          predDiv.innerHTML = `
+            <div class="pred-item"><span>Trend:</span> <strong>${pred.trend || 'N/A'}</strong></div>
+            <div class="pred-item"><span>1h Projection:</span> <strong>${pred.projected_1h || 'N/A'}</strong></div>
+            <div class="pred-item"><span>24h Projection:</span> <strong>${pred.projected_24h || 'N/A'}</strong></div>
+            <div class="pred-item"><span>Confidence:</span> <strong>${pred.confidence || 'low'}</strong></div>
+          `;
         }
         
-        // Alerts
-        const alerts = pl.alerts || [];
-        const alertsDiv = document.getElementById('alerts');
-        if (alerts.length > 0) {
-          alertsDiv.innerHTML = alerts.map(a => `<div class="alert-${a.level}">${a.message}</div>`).join('');
+        // Incidents
+        const incidents = pl.incidents || [];
+        const incDiv = document.getElementById('incidents');
+        if (incidents.length > 0) {
+          incDiv.innerHTML = incidents.map(i => `<div class="incident-${i.severity || 'warning'}">${i.message}</div>`).join('');
         } else {
-          alertsDiv.innerHTML = '<p>✅ No active alerts</p>';
-        }
-        
-        // Self-Healing
-        const healing = pl.self_healing || [];
-        const healingDiv = document.getElementById('selfHealing');
-        if (healing.length > 0) {
-          healingDiv.innerHTML = healing.map(h => `<div class="healing-item">${h.message}</div>`).join('');
-        } else {
-          healingDiv.innerHTML = '<p>✅ No self-healing actions needed</p>';
+          incDiv.innerHTML = '<p class="success">✅ No active incidents - System healthy</p>';
         }
         
         // Recommendations
@@ -501,9 +606,20 @@
         const recDiv = document.getElementById('recommendations');
         if (recs.length > 0) {
           recDiv.innerHTML = recs.map(r => `<div class="rec-${r.priority}">
-            <strong>[${r.priority.toUpperCase()}]</strong> ${r.message}
+            <span class="rec-priority">[${r.priority.toUpperCase()}]</span>
+            <span class="rec-message">${r.message}</span>
+            <span class="rec-action">→ ${r.action}</span>
           </div>`).join('');
         }
+      }
+    }
+    
+    async function showAnalytics() {
+      const data = await apiCall('/api/v1/analytics?days=7');
+      if (data.success) {
+        const a = data.analytics;
+        const breakdown = Object.entries(a.event_breakdown || {}).map(([k,v]) => `${k}: ${v}`).join('\n');
+        alert(`📈 Analytics (Last ${a.period_days} days)\n\nTotal Events: ${a.total_events}\n\n${breakdown || 'No events'}`);
       }
     }
     
