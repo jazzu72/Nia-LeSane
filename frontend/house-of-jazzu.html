@@ -119,6 +119,19 @@
     .add-lead-form input { padding: 10px; border-radius: 5px; border: 1px solid #333; background: #1a1a1a; color: white; }
     .leads-list { list-style: none; padding: 0; text-align: left; }
     .leads-list li { padding: 10px; border-bottom: 1px solid #333; }
+    
+    /* New Dashboard Styles */
+    .prediction-panel, .alerts-panel, .healing-panel { background: #1a1a1a; padding: 15px; border-radius: 10px; margin: 15px 0; text-align: left; }
+    .prediction-panel h3, .alerts-panel h3, .healing-panel h3 { margin: 0 0 10px 0; color: #667eea; font-size: 1rem; }
+    .prediction-panel p, .alerts-panel p, .healing-panel p { margin: 5px 0; color: #aaa; font-size: 0.9rem; }
+    .alert-critical { background: #ff4444; color: white; padding: 10px; border-radius: 5px; margin: 5px 0; }
+    .healing-item { background: #44aa44; color: white; padding: 8px; border-radius: 5px; margin: 5px 0; font-size: 0.9rem; }
+    .quick-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+    .quick-actions .btn { flex: 1; min-width: 100px; }
+    .rec-critical { background: #ff4444; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; }
+    .rec-high { background: #ff8800; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; }
+    .rec-medium { background: #ffaa00; color: black; padding: 12px; border-radius: 8px; margin: 8px 0; }
+    .rec-low { background: #44bb44; color: white; padding: 12px; border-radius: 8px; margin: 8px 0; }
 
 
     .contact-info {
@@ -270,7 +283,7 @@
 
     <!-- Power Layer Dashboard -->
     <div class="card" id="powerSection" style="display: none;">
-      <h2>⚡ Power Layer Dashboard</h2>
+      <h2>⚡ Power Layer Dashboard ⭐⭐⭐⭐⭐</h2>
       
       <div class="power-stats">
         <div class="stat">
@@ -288,12 +301,40 @@
         <p>Usage: <span id="usageCount">0</span> / <span id="threshold">100</span></p>
         <p>Errors: <span id="errorCount">0</span></p>
         <p>Uptime: <span id="uptime">0s</span></p>
+        <p>Total Requests: <span id="totalReqs">0</span></p>
+        <p>Avg Response: <span id="avgResponse">0ms</span></p>
       </div>
       
-      <div id="recommendations"></div>
+      <!-- Prediction Section -->
+      <div class="prediction-panel" id="predictionPanel">
+        <h3>🔮 AI Predictions</h3>
+        <div id="prediction"></div>
+      </div>
       
-      <button class="btn" onclick="refreshPower()">🔄 Refresh</button>
-      <button class="btn" onclick="resetMetrics()">🗑️ Reset</button>
+      <!-- Alerts Section -->
+      <div class="alerts-panel" id="alertsPanel">
+        <h3>🚨 Alerts</h3>
+        <div id="alerts"></div>
+      </div>
+      
+      <!-- Self-Healing Section -->
+      <div class="healing-panel" id="healingPanel">
+        <h3>🧬 Self-Healing Actions</h3>
+        <div id="selfHealing"></div>
+      </div>
+      
+      <!-- Recommendations Section -->
+      <div class="recommendations-panel">
+        <h3>💡 AI Recommendations</h3>
+        <div id="recommendations"></div>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button class="btn" onclick="refreshPower()">🔄 Refresh</button>
+        <button class="btn" onclick="resetMetrics()">🗑️ Reset</button>
+        <button class="btn" onclick="showAudit()">📊 Audit Log</button>
+      </div>
     </div>
 
 
@@ -420,17 +461,48 @@
         document.getElementById('usageCount').textContent = pl.metrics?.usage || 0;
         document.getElementById('threshold').textContent = pl.threshold || 100;
         document.getElementById('errorCount').textContent = pl.metrics?.errors || 0;
+        document.getElementById('totalReqs').textContent = pl.metrics?.total_requests_ever || 0;
+        document.getElementById('avgResponse').textContent = (pl.metrics?.avg_response_time || 0).toFixed(0) + 'ms';
         
         const uptime = pl.metrics?.uptime_seconds || 0;
         document.getElementById('uptime').textContent = formatUptime(uptime);
         
-        // Show recommendations
+        // Prediction
+        const pred = pl.prediction || {};
+        const predDiv = document.getElementById('prediction');
+        if (pred.predicted && pred.predicted !== 'collecting_data') {
+          predDiv.innerHTML = `<p>Trend: ${pred.current_trend || 'N/A'}</p>
+            <p>1h projection: ${pred.projected_usage_1h || 'N/A'}</p>
+            <p>24h projection: ${pred.projected_usage_24h || 'N/A'}</p>`;
+        } else {
+          predDiv.innerHTML = '<p>🔄 Collecting data for predictions...</p>';
+        }
+        
+        // Alerts
+        const alerts = pl.alerts || [];
+        const alertsDiv = document.getElementById('alerts');
+        if (alerts.length > 0) {
+          alertsDiv.innerHTML = alerts.map(a => `<div class="alert-${a.level}">${a.message}</div>`).join('');
+        } else {
+          alertsDiv.innerHTML = '<p>✅ No active alerts</p>';
+        }
+        
+        // Self-Healing
+        const healing = pl.self_healing || [];
+        const healingDiv = document.getElementById('selfHealing');
+        if (healing.length > 0) {
+          healingDiv.innerHTML = healing.map(h => `<div class="healing-item">${h.message}</div>`).join('');
+        } else {
+          healingDiv.innerHTML = '<p>✅ No self-healing actions needed</p>';
+        }
+        
+        // Recommendations
         const recs = pl.recommendations || [];
         const recDiv = document.getElementById('recommendations');
         if (recs.length > 0) {
-          recDiv.innerHTML = '<div class="recs"><strong>💡 Recommendations:</strong><ul>' + 
-            recs.map(r => `<li class="rec-${r.priority}">[${r.priority.toUpperCase()}] ${r.message}</li>`).join('') + 
-            '</ul></div>';
+          recDiv.innerHTML = recs.map(r => `<div class="rec-${r.priority}">
+            <strong>[${r.priority.toUpperCase()}]</strong> ${r.message}
+          </div>`).join('');
         }
       }
     }
@@ -451,6 +523,16 @@
         } else {
           alert('Failed: ' + data.message);
         }
+      }
+    }
+    
+    async function showAudit() {
+      const data = await apiCall('/audit');
+      if (data.success && data.audit_log) {
+        const log = data.audit_log.map(e => `${e.timestamp} | ${e.ip} | ${e.endpoint} | ${e.action}`).join('\n');
+        alert('📊 Audit Log:\n\n' + log);
+      } else {
+        alert('Failed to load audit log');
       }
     }
     
