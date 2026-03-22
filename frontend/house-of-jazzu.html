@@ -538,9 +538,13 @@
       }
     }
     
+    // Backend URL - CHANGE THIS TO YOUR RENDER URL AFTER DEPLOYMENT
+    // Example: const API_BASE = "https://nia-prime.onrender.com";
+    const API_BASE = ""; // e.g., "https://your-app.onrender.com"
+    
     // Make API call with API key
     async function apiCall(endpoint, options = {}) {
-      const url = API_CONFIG.baseUrl + endpoint;
+      const url = (API_BASE || API_CONFIG.baseUrl) + endpoint;
       
       const headers = {
         'X-API-Key': 'nia_enterprise_key_2026',
@@ -682,7 +686,7 @@
       input.value = '';
       
       try {
-        const res = await fetch(API_BASE + '/api/v1/chat', {
+        const res = await fetch((API_BASE || API_CONFIG.baseUrl) + '/api/v1/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
