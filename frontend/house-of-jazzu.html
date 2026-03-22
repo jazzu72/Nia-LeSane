@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The House of Jazzu</title>
+
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+
+    .container {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+
+    .tagline {
+      font-size: 1.2rem;
+      color: #aaa;
+      margin-bottom: 40px;
+    }
+
+    .owner-info {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 30px;
+    }
+
+    .owner-info strong {
+      color: #fff;
+    }
+
+
+    .card {
+      background: #111;
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px 0;
+      box-shadow: 0 0 20px rgba(255,255,255,0.05);
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      font-size: 1.5rem;
+    }
+
+    .card p {
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-telegram {
+      background: #0088cc;
+      color: #fff;
+    }
+
+    .btn-launch {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+
+    .contact-info {
+      text-align: left;
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+    }
+
+    .contact-info p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+
+    .contact-info strong {
+      color: #667eea;
+    }
+
+    /* Password Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #111;
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #222;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .modal-content input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .error-msg {
+      color: #ff4444;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+
+
+<body>
+  <!-- Password Modal -->
+  <div id="passwordModal" class="modal active">
+    <div class="modal-content">
+      <h2>🔐 House of Jazzu</h2>
+      <p style="color: #888; margin-bottom: 20px;">Enter your special password to access</p>
+      <input type="password" id="accessPassword" placeholder="Enter password" />
+      <button class="btn btn-launch" onclick="verifyPassword()">Access</button>
+      <p id="errorMsg" class="error-msg">Incorrect password. Try again.</p>
+    </div>
+  </div>
+
+  <div class="container" id="mainContent" style="display: none;">
+
+
+    <h1>THE HOUSE OF JAZZU</h1>
+    <p class="tagline">Innovation • Wealth • Legacy</p>
+    
+    <div class="owner-info">
+      <strong>Jason LeSane</strong> — lesane1972@gmail.com<br>
+      <strong>757-339-9245</strong>
+    </div>
+
+
+    <div class="card">
+      <h2>🚀 Nia Prime</h2>
+      <p>Your intelligent system for opportunity discovery, automation, and growth.</p>
+      <button class="btn btn-launch" onclick="requirePassword()">Launch App</button>
+    </div>
+
+
+    <div class="card">
+      <h2>💰 Global Asset Radar</h2>
+      <p>Track grants, real estate, and high-value opportunities worldwide.</p>
+      <button class="btn" onclick="requirePassword()">Access Radar</button>
+    </div>
+
+
+    <div class="card">
+      <h2>🏦 The Vault</h2>
+      <p>Secure, intelligent financial control system built for growth and protection.</p>
+      <button class="btn" onclick="requirePassword()">Open Vault</button>
+    </div>
+
+
+    <div class="card">
+      <h2>📲 Contact / Telegram</h2>
+      <p>Connect directly for opportunities and partnerships.</p>
+      
+      <div class="contact-info">
+        <p><strong>Owner:</strong> Jason LeSane</p>
+        <p><strong>Email:</strong> lesane1972@gmail.com</p>
+        <p><strong>Phone:</strong> 757-339-9245</p>
+        <p><strong>Telegram:</strong> +1 757-339-9245</p>
+      </div>
+
+      <a href="https://t.me/+1234567890" class="btn btn-telegram">
+        Message on Telegram
+      </a>
+    </div>
+
+
+    <div class="footer">
+      © 2026 The House of Jazzu — Built for the Future
+    </div>
+
+  </div>
+
+  <script>
+    // 🔒 YOUR SECURE KEYS - ONLY YOU KNOW THESE
+    const OWNER_SECRET_KEY = "jazzu-ultimate-2026-secure";
+    const API_BASE = ""; // Use relative path for same-origin, or set your backend URL
+    
+    // API Configuration
+    const API_CONFIG = {
+      baseUrl: API_BASE || window.location.origin,
+      secretKey: OWNER_SECRET_KEY
+    };
+    
+    let isAuthenticated = false;
+    
+    function verifyPassword() {
+      const password = document.getElementById('accessPassword').value;
+      const errorMsg = document.getElementById('errorMsg');
+      
+      if (password === "AddieMaeLesane-33" || password === OWNER_SECRET_KEY) {
+        isAuthenticated = true;
+        sessionStorage.setItem('jazzu_auth', 'true');
+        sessionStorage.setItem('jazzu_secret', OWNER_SECRET_KEY);
+        document.getElementById('passwordModal').classList.remove('active');
+        document.getElementById('mainContent').style.display = 'block';
+      } else {
+        errorMsg.classList.add('show');
+        document.getElementById('accessPassword').value = '';
+      }
+    }
+    
+    function requireAuth() {
+      if (!isAuthenticated) {
+        if (sessionStorage.getItem('jazzu_auth') === 'true') {
+          isAuthenticated = true;
+          document.getElementById('passwordModal').classList.remove('active');
+          document.getElementById('mainContent').style.display = 'block';
+        } else {
+          document.getElementById('passwordModal').classList.add('active');
+        }
+      }
+    }
+    
+    // Make API call with secret key
+    async function apiCall(endpoint, options = {}) {
+      const secret = sessionStorage.getItem('jazzu_secret') || OWNER_SECRET_KEY;
+      const url = API_CONFIG.baseUrl + endpoint;
+      
+      const headers = {
+        'X-Secret-Key': secret,
+        'Content-Type': 'application/json',
+        ...options.headers
+      };
+      
+      try {
+        const response = await fetch(url, {
+          ...options,
+          headers
+        });
+        return await response.json();
+      } catch (error) {
+        console.error('API Error:', error);
+        return { success: false, message: error.message };
+      }
+    }
+    
+    // Check session on load
+    window.addEventListener('load', function() {
+      if (sessionStorage.getItem('jazzu_auth') === 'true') {
+        isAuthenticated = true;
+        document.getElementById('passwordModal').classList.remove('active');
+        document.getElementById('mainContent').style.display = 'block';
+      }
+    });
+    
+    // Allow Enter key to submit
+    document.getElementById('accessPassword').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verifyPassword();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="description" content="Nia-Prime-Lite - Your AI Assistant">
+    <title>Nia-Prime-Lite</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nia-Prime-Lite</h1>
+            <p class="subtitle">Your AI Assistant</p>
+        </header>
+
+        <main>
+            <section class="status-card">
+                <div id="api-status" class="status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Checking API...</span>
+                </div>
+            </section>
+
+            <section class="form-card">
+                <h2>Add Lead</h2>
+                <form id="lead-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter phone (optional)">
+                    </div>
+                    <button type="submit" class="btn-primary">Submit</button>
+                </form>
+                <div id="form-message" class="message"></div>
+            </section>
+
+            <section class="leads-card">
+                <div class="leads-header">
+                    <h2>Leads</h2>
+                    <button id="refresh-leads" class="btn-secondary">Refresh</button>
+                </div>
+                <div id="leads-list" class="leads-list">
+                    <p class="empty-state">No leads yet</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Nia-Prime-Lite</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>
