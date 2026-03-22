@@ -743,6 +743,113 @@ def track_event():
     
     return jsonify({"success": True})
 
+# ============================================
+# 💬 NIA AI CHAT SYSTEM
+# ============================================
+class NiaAI:
+    """Nia - Intelligent AI Assistant"""
+    
+    # Knowledge base
+    KNOWLEDGE = {
+        "owner": "Jason LeSane is the owner. Contact: lesane1972@gmail.com, 757-339-9245",
+        "about": "Nia Prime Enterprise - Built by Ex-IBM & Ex-Google engineer. $20M budget infrastructure.",
+        "capabilities": "Lead management, analytics, power layer monitoring, AI predictions, enterprise security",
+        "contact": "Email: lesane1972@gmail.com | Phone: 757-339-9245 | Telegram: +1234567890",
+        "security": "JWT tokens, API keys, rate limiting, IP whitelist, audit logging - 100% owner access only",
+    }
+    
+    @staticmethod
+    def generate_response(message: str, context: dict = None) -> str:
+        """Generate intelligent response"""
+        message = message.lower().strip()
+        
+        # Greetings
+        if any(g in message for g in ["hello", "hi", "hey", "greetings"]):
+            return "Hello! I'm Nia, your AI assistant. How can I help you today? 🚀"
+        
+        # Owner info
+        if any(w in message for w in ["who is owner", "owner name", "who owns", "who built"]):
+            return NiaAI.KNOWLEDGE["owner"]
+        
+        # About
+        if any(w in message for w in ["what are you", "what is nia", "tell me about", "about nia"]):
+            return NiaAI.KNOWLEDGE["about"]
+        
+        # Capabilities
+        if any(w in message for w in ["what can you do", "capabilities", "features", "functions"]):
+            return NiaAI.KNOWLEDGE["capabilities"]
+        
+        # Contact
+        if any(w in message for w in ["contact", "email", "phone", "telegram", "reach"]):
+            return NiaAI.KNOWLEDGE["contact"]
+        
+        # Security
+        if any(w in message for w in ["security", "safe", "protected", "encryption"]):
+            return NiaAI.KNOWLEDGE["security"]
+        
+        # Status check
+        if any(w in message for w in ["status", "health", "how are you", "system status"]):
+            status = power_layer.get_status()
+            return f"System Status: {status['status'].upper()}\nHealth Score: {status['health_score']}/100\nUptime: {status['uptime_formatted']}"
+        
+        # Metrics
+        if any(w in message for w in ["metrics", "stats", "statistics", "usage"]):
+            status = power_layer.get_status()
+            m = status['metrics']
+            return f"📊 Metrics:\n• Requests: {m['requests']}\n• Total Ever: {m['total_requests_ever']}\n• Errors: {m['errors']}\n• Uptime: {status['uptime_formatted']}"
+        
+        # Leads
+        if any(w in message for w in ["leads", "contacts", "customers"]):
+            return "I can help manage leads. Use /api/v1/leads endpoint to add or view leads. Requires authentication."
+        
+        # Help
+        if any(w in message for w in ["help", "commands", "what commands"]):
+            return """Available commands:
+• Ask about owner → Get owner info
+• Ask about Nia → Learn about this system
+• Status → System health check
+• Metrics → View statistics
+• Leads → Lead management info
+• Security → Security info
+• Contact → Contact information"""
+        
+        # Default smart response
+        responses = [
+            "I'm Nia, your AI assistant. Ask me about the system, owner, status, or any capabilities!",
+            "I can help with system monitoring, lead management, and answering questions. What would you like to know?",
+            "That's interesting! I can tell you about the owner, system status, metrics, or security. What interests you?",
+        ]
+        import random
+        return random.choice(responses)
+
+nia_ai = NiaAI()
+
+@app.route('/api/v1/chat', methods=['POST'])
+@require_auth
+def chat():
+    """Nia AI Chat Endpoint"""
+    data = request.get_json() or {}
+    message = data.get("message", "").strip()
+    
+    if not message:
+        return jsonify({"success": False, "message": "Message required"}), 400
+    
+    # Track chat event
+    analytics.track_event("chat_message", g.auth_user.get("sub"), {"message_length": len(message)})
+    
+    # Get power layer context
+    context = power_layer.get_status()
+    
+    # Generate response
+    reply = nia_ai.generate_response(message, context)
+    
+    return jsonify({
+        "success": True,
+        "reply": reply,
+        "nia_version": "3.0",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
 # Audit
 @app.route('/api/v1/audit')
 @require_auth
